@@ -1,0 +1,17 @@
+*.xlsx
+~$*.xlsx
+*.pyc
+__pycache__/
+analyze_excel.py
+process_it_asset.py
+process_os_replace.py
+process_os_replace_full.py
+process_os_restart.py
+process_antivirus.py
+process_firewall.py
+process_domain.py
+process_privileged.py
+process_doc_request.py
+generate_dashboard_data.py
+eia_summary_data.json
+dashboard_data.json
