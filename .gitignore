@@ -1,0 +1,15 @@
+# Large data files
+*.csv
+*.xlsx
+*.json
+!dashboard_data.json
+
+# Local Gemini CLI files
+chats/
+logs.json
+.project_root
+
+# Other
+APIupdate/
+node_modules/
+.env
