@@ -92,8 +92,14 @@ def sync_to_github():
 if __name__ == "__main__":
     print(f"Reading files from '{EXCEL_FOLDER}'...")
     it_d, it_s = process_it_asset()
+    
+    # Current Thai Timestamp (BE Year)
+    now = datetime.now()
+    thai_year = now.year + 543
+    timestamp_str = f"{now.strftime('%d/%m')}/{thai_year} {now.strftime('%H:%M:%S')}"
+
     new_data = {
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "timestamp": timestamp_str,
         "sections": [
             {"id": 1, "title": "1- IT Asset Incomplete Information", "details": it_s},
             {"id": 2, "title": "2.1 - Update OS - Replace", "details": process_os_replace()},
