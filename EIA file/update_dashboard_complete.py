@@ -57,6 +57,7 @@ def process_generic(filename, sheet, skip_rows, team_idx, status_idx):
         s_data = data[status_idx].fillna('N').astype(str).str.strip().str.upper()
         s_mapped = s_data.apply(lambda x: 'Y' if x == 'Y' else 'N')
         temp = pd.DataFrame({'Team': t_data, 'Status': s_mapped})
+        temp = temp[~temp['Team'].astype(str).str.contains('Service Team', case=False, na=False)]
         grp = temp.groupby(['Team', 'Status']).size().unstack(fill_value=0).reset_index()
         if 'Y' not in grp.columns: grp['Y'] = 0
         if 'N' not in grp.columns: grp['N'] = 0
@@ -71,6 +72,7 @@ def process_os_replace():
         df.columns = [str(c).strip() for c in df.columns]
         df['Service Team'] = df['Service Team'].fillna('Unknown')
         df['Status'] = df['Updated or Replaced Y/N'].fillna('N').astype(str).str.strip().str.upper().apply(lambda x: 'Y' if x == 'Y' else 'N')
+        df = df[~df['Service Team'].astype(str).str.contains('Service Team', case=False, na=False)]
         grp = df.groupby(['Service Team', 'Status']).size().unstack(fill_value=0).reset_index()
         if 'Y' not in grp.columns: grp['Y'] = 0
         if 'N' not in grp.columns: grp['N'] = 0
