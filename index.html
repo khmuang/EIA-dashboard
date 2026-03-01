@@ -115,6 +115,14 @@
 </head>
 <body class="text-slate-800">
 
+    <!-- Back to Top Button (Fixed outside main-content) -->
+    <button id="backToTop" title="Go to top" onclick="scrollToTop()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </button>
+
+    <!-- LOGIN POP-UP -->
     <div id="login-modal">
         <div class="modal-box">
             <div class="relative z-10">
@@ -130,15 +138,10 @@
             </div>
         </div>
     </div>
+<!-- MAIN DASHBOARD CONTENT -->
+<div id="main-content">
 
-    <div id="main-content">
-        <button id="backToTop" title="Go to top" onclick="scrollToTop()">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-            </svg>
-        </button>
-
-        <header class="tech-bg text-white p-16 text-center shadow-2xl relative">
+    <header class="tech-bg text-white p-16 text-center shadow-2xl relative">
             <div class="glow-blob bg-blue-600 opacity-20 top-10 -left-20 float"></div>
             <div class="glow-blob bg-emerald-600 opacity-20 bottom-10 -right-20 float" style="animation-delay: 3s;"></div>
 
@@ -280,18 +283,208 @@
 
     <script>
         const rawData = {
-            "timestamp": "01/03/2569 09:22:38",
-            "sections": [
-                { id: 1, title: "1- IT Asset Incomplete Information", details: [{ "Service Team": "Branch", "Y": 175, "N": 61 }, { "Service Team": "DC", "Y": 29, "N": 7 }, { "Service Team": "HO", "Y": 52, "N": 0 }, { "Service Team": "RIS NO Service", "Y": 16, "N": 0 }] },
-                { id: 2, title: "2.1 - Update OS - Replace", details: [{ "Service Team": "Branch", "Y": 0, "N": 7565 }, { "Service Team": "DC", "Y": 0, "N": 863 }, { "Service Team": "HO", "Y": 37, "N": 2654 }] },
-                { id: 3, title: "2.2 - OS Require Restart", details: [{ "Service Team": "Branch", "Y": 11, "N": 777 }, { "Service Team": "DC", "Y": 0, "N": 229 }, { "Service Team": "HO", "Y": 641, "N": 723 }, { "Service Team": "Unknown", "Y": 0, "N": 3 }] },
-                { id: 4, title: "3- Antivirus Installation", details: [{ "Service Team": "Branch", "Y": 23, "N": 302 }, { "Service Team": "DC", "Y": 14, "N": 20 }, { "Service Team": "HO", "Y": 235, "N": 30 }, { "Service Team": "Unknown", "Y": 0, "N": 9 }] },
-                { id: 5, title: "4- Built-in Firewall Enable", details: [{ "Service Team": "Branch", "Y": 2989, "N": 1606 }, { "Service Team": "DC", "Y": 798, "N": 121 }, { "Service Team": "HO", "Y": 1190, "N": 256 }, { "Service Team": "Unknown", "Y": 6, "N": 7 }] },
-                { id: 6, title: "5- Client Joined Domain", details: [{ "Service Team": "Branch", "Y": 28, "N": 111 }, { "Service Team": "DC", "Y": 11, "N": 7 }, { "Service Team": "HO", "Y": 268, "N": 102 }, { "Service Team": "Unknown", "Y": 1, "N": 8 }] },
-                { id: 7, title: "6- Privileged User management", details: [{ "Service Team": "Branch", "Y": 39, "N": 1781 }, { "Service Team": "DC", "Y": 0, "N": 363 }, { "Service Team": "HO", "Y": 0, "N": 972 }, { "Service Team": "Unknown", "Y": 0, "N": 18 }] },
-                { id: 8, title: "7- Document Request Evidence", details: [{ "Service Team": "Branch", "Y": 0, "N": 3 }, { "Service Team": "DC", "Y": 0, "N": 3 }, { "Service Team": "HO", "Y": 2, "N": 1 }] }
+    "timestamp": "01/03/2569 14:05:02",
+    "sections": [
+        {
+            "id": 1,
+            "title": "1- IT Asset Incomplete Information",
+            "details": [
+                {
+                    "Service Team": "Branch",
+                    "Y": 175,
+                    "N": 61
+                },
+                {
+                    "Service Team": "DC",
+                    "Y": 29,
+                    "N": 7
+                },
+                {
+                    "Service Team": "HO",
+                    "Y": 52,
+                    "N": 0
+                },
+                {
+                    "Service Team": "RIS NO Service",
+                    "Y": 16,
+                    "N": 0
+                }
             ]
-        };
+        },
+        {
+            "id": 2,
+            "title": "2.1 - Update OS - Replace",
+            "details": [
+                {
+                    "Service Team": "Branch",
+                    "Y": 0,
+                    "N": 7565
+                },
+                {
+                    "Service Team": "DC",
+                    "Y": 0,
+                    "N": 863
+                },
+                {
+                    "Service Team": "HO",
+                    "Y": 37,
+                    "N": 2654
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "title": "2.2 - OS Require Restart",
+            "details": [
+                {
+                    "Service Team": "Branch",
+                    "Y": 11,
+                    "N": 777
+                },
+                {
+                    "Service Team": "DC",
+                    "Y": 0,
+                    "N": 229
+                },
+                {
+                    "Service Team": "HO",
+                    "Y": 641,
+                    "N": 723
+                },
+                {
+                    "Service Team": "Unknown",
+                    "Y": 0,
+                    "N": 3
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "title": "3- Antivirus Installation",
+            "details": [
+                {
+                    "Service Team": "Branch",
+                    "Y": 23,
+                    "N": 302
+                },
+                {
+                    "Service Team": "DC",
+                    "Y": 14,
+                    "N": 20
+                },
+                {
+                    "Service Team": "HO",
+                    "Y": 235,
+                    "N": 30
+                },
+                {
+                    "Service Team": "Unknown",
+                    "Y": 0,
+                    "N": 9
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "title": "4- Built-in Firewall Enable",
+            "details": [
+                {
+                    "Service Team": "Branch",
+                    "Y": 2989,
+                    "N": 1606
+                },
+                {
+                    "Service Team": "DC",
+                    "Y": 798,
+                    "N": 121
+                },
+                {
+                    "Service Team": "HO",
+                    "Y": 1190,
+                    "N": 256
+                },
+                {
+                    "Service Team": "Unknown",
+                    "Y": 6,
+                    "N": 7
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "title": "5- Client Joined Domain",
+            "details": [
+                {
+                    "Service Team": "Branch",
+                    "Y": 28,
+                    "N": 111
+                },
+                {
+                    "Service Team": "DC",
+                    "Y": 11,
+                    "N": 7
+                },
+                {
+                    "Service Team": "HO",
+                    "Y": 268,
+                    "N": 102
+                },
+                {
+                    "Service Team": "Unknown",
+                    "Y": 1,
+                    "N": 8
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "title": "6- Privileged User management",
+            "details": [
+                {
+                    "Service Team": "Branch",
+                    "Y": 39,
+                    "N": 1781
+                },
+                {
+                    "Service Team": "DC",
+                    "Y": 0,
+                    "N": 363
+                },
+                {
+                    "Service Team": "HO",
+                    "Y": 0,
+                    "N": 972
+                },
+                {
+                    "Service Team": "Unknown",
+                    "Y": 0,
+                    "N": 18
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "title": "7- Document Request Evidence",
+            "details": [
+                {
+                    "Service Team": "Branch",
+                    "Y": 0,
+                    "N": 3
+                },
+                {
+                    "Service Team": "DC",
+                    "Y": 0,
+                    "N": 3
+                },
+                {
+                    "Service Team": "HO",
+                    "Y": 2,
+                    "N": 1
+                }
+            ]
+        }
+    ]
+};
 
         let myBarChart, myPieChart, myTeamChart;
         let targetCompliancePct = 0;

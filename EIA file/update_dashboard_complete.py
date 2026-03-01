@@ -82,7 +82,8 @@ def process_os_replace():
 def sync_to_github():
     print("\n--- Syncing to GitHub ---")
     try:
-        subprocess.run(["git", "add", "index.html", "update_dashboard_complete.py", ".gitignore"], check=True)
+        # Reference files with proper paths relative to the root
+        subprocess.run(["git", "add", "index.html", "EIA file/update_dashboard_complete.py", ".gitignore"], check=True)
         msg = f"Auto-update Dashboard: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
         subprocess.run(["git", "commit", "-m", msg], check=True)
         subprocess.run(["git", "push", "origin", "main"], check=True)
