@@ -10,10 +10,22 @@
     <style>
         body { 
             font-family: 'Sarabun', sans-serif; 
-            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); 
-            background-attachment: fixed;
-            scroll-behavior: smooth; 
+            background: #0f172a; 
+            margin: 0;
+            overflow-x: hidden;
         }
+        
+        #main-content {
+            transition: filter 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: blur(20px);
+            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        #main-content.active {
+            filter: blur(0);
+        }
+
         .summary-card { transition: all 0.3s ease; border: 1px solid #e2e8f0; background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); }
         .summary-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); border-color: #3b82f6; }
         .progress-bar { height: 6px; border-radius: 3px; background: #e2e8f0; overflow: hidden; }
@@ -21,7 +33,6 @@
         .sticky-filter { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .action-card { border-left: 6px solid #ef4444; background: #fff5f5; }
         
-        /* Back to Top Button */
         #backToTop {
             position: fixed;
             bottom: 30px;
@@ -43,7 +54,56 @@
             transform: scale(1.1);
         }
 
-        /* Hero & Animations */
+        .tech-bg {
+            background-color: #0f172a;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #login-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            transition: opacity 0.5s ease;
+        }
+
+        .modal-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+            padding: 3rem;
+            border-radius: 3rem;
+            box-shadow: 0 0 50px rgba(30, 58, 138, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: modalSlideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes modalSlideUp {
+            from { transform: translateY(50px) scale(0.9); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .glow-green { box-shadow: 0 0 15px rgba(16, 185, 129, 0.8); }
+        .float { animation: floating 8s ease-in-out infinite; }
+        @keyframes floating {
+            0% { transform: translate(0, 0px); }
+            50% { transform: translate(15px, 20px); }
+            100% { transform: translate(0, 0px); }
+        }
+        .glow-blob { position: absolute; width: 400px; height: 400px; border-radius: 50%; filter: blur(80px); z-index: 0; }
+
         @keyframes pulse-green {
             0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
             70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
@@ -55,370 +115,186 @@
 </head>
 <body class="text-slate-800">
 
-    <!-- Back to Top Button -->
-    <button id="backToTop" title="Go to top" onclick="scrollToTop()">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-        </svg>
-    </button>
-
-    <!-- POSITION 1: Executive Scorecard Header -->
-    <header class="bg-blue-900 text-white p-16 text-center relative overflow-hidden shadow-2xl">
-        <div class="max-w-7xl mx-auto relative z-10">
-            <!-- Restored Main Titles -->
-            <h1 class="text-4xl md:text-6xl font-black mb-3 tracking-tight">EIA Performance Dashboard</h1>
-            <p class="text-blue-400 text-xs md:text-base uppercase tracking-[0.3em] font-bold mb-12 opacity-90">Endpoint Internal Audit OVERVIEW (Q1) 2026</p>
-
-            <div class="inline-block px-6 py-2 bg-blue-800/50 rounded-full border border-blue-700 mb-4">
-                <p class="text-blue-200 uppercase tracking-widest font-black text-[10px]">Overall Compliance Performance Score</p>
-            </div>
-            
-            <h2 class="text-8xl md:text-9xl font-black mb-6 tracking-tighter italic" id="hero-compliance-pct">0<span class="text-4xl ml-2 text-blue-400 not-italic">%</span></h2>
-            
-            <div class="flex flex-wrap justify-center gap-8 mt-10">
-                <div class="text-left border-l-4 border-emerald-500 pl-4">
-                    <p class="text-[10px] text-blue-300 uppercase font-black tracking-widest">Total Audited Units</p>
-                    <p class="text-2xl font-black" id="hero-total-units">0</p>
+    <div id="login-modal">
+        <div class="modal-box">
+            <div class="relative z-10">
+                <div class="w-24 h-24 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl rotate-3">
+                    <svg class="w-12 h-12 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 </div>
-                <div class="text-left border-l-4 border-blue-400 pl-4">
-                    <p class="text-[10px] text-blue-300 uppercase font-black tracking-widest">Data Last Refresh</p>
-                    <p class="text-2xl font-black" id="hero-last-update">--:--:--</p>
-                </div>
-            </div>
-            
-            <div class="mt-12 flex flex-wrap justify-center gap-4">
-                <a href="#detailed-roadmap" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 px-10 rounded-full transition-all shadow-lg shadow-emerald-900/40 uppercase tracking-widest text-xs">
-                    Analyze Full Roadmap ↓
-                </a>
-                <button onclick="exportSummary()" class="bg-white hover:bg-blue-50 text-blue-900 font-black py-4 px-10 rounded-full transition-all shadow-lg shadow-blue-900/20 uppercase tracking-widest text-xs flex items-center space-x-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    <span>Export CSV Summary</span>
+                <h2 class="text-3xl font-black text-white mb-3" id="welcome-msg">สวัสดีครับ...</h2>
+                <p class="text-blue-200/80 mb-10 font-medium leading-relaxed text-lg">ยินดีต้อนรับเข้าสู่ระบบรายงานผล<br><span class="font-black text-white border-b-2 border-blue-400 pb-1">EIA Performance Dashboard</span></p>
+                <button onclick="dismissModal()" class="w-full bg-white hover:bg-blue-50 text-blue-900 font-black py-5 px-10 rounded-2xl transition-all shadow-2xl uppercase tracking-widest text-sm active:scale-95">
+                    เข้าสู่ Dashboard (Submit)
                 </button>
-            </div>
-        </div>
-        <!-- Decorative Background -->
-        <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-blue-800 rounded-full opacity-20"></div>
-        <div class="absolute -left-10 -top-10 w-48 h-48 bg-blue-700 rounded-full opacity-10"></div>
-    </header>
-
-    <!-- Sticky Filter Bar -->
-    <div class="sticky-filter py-4 px-8 border-b">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <span class="font-bold text-slate-600">View by Service Team:</span>
-                <select id="teamFilter" class="border rounded-lg px-4 py-2 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 outline-none font-bold text-blue-900" onchange="renderDashboard()">
-                    <option value="All">All Teams (Corporate View)</option>
-                    <option value="Branch">Branch Team</option>
-                    <option value="HO">HO Team</option>
-                    <option value="DC">DC Team</option>
-                </select>
-            </div>
-            <div class="hidden md:block text-xs font-bold text-slate-400 uppercase tracking-widest">
-                Compliance & Responsibility Matrix 2026
+                <p class="text-[10px] text-blue-300/50 mt-6 uppercase tracking-widest font-bold italic">Secure Access Verified</p>
             </div>
         </div>
     </div>
 
-    <main class="max-w-7xl mx-auto p-4 md:p-8">
-        
-        <!-- POSITION 2: System Health Monitor (Integrated with Global Charts) -->
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-16 items-stretch">
-            <div class="lg:col-span-2 bg-gradient-to-br from-slate-900 to-blue-900 text-white p-8 rounded-[2rem] shadow-xl flex flex-col md:flex-row items-center justify-around border border-blue-800">
-                <div class="text-center mb-6 md:mb-0">
-                    <div class="w-32 h-32 rounded-full bg-emerald-500/20 flex items-center justify-center pulse-circle mb-4 mx-auto">
-                        <div class="w-24 h-24 rounded-full bg-emerald-500 flex flex-col items-center justify-center shadow-lg shadow-emerald-500/50">
-                            <svg class="w-8 h-8 text-white mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <span class="text-[8px] font-black uppercase tracking-widest">Operational</span>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-black italic tracking-tighter">System Health</h3>
+    <div id="main-content">
+        <button id="backToTop" title="Go to top" onclick="scrollToTop()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+        </button>
+
+        <header class="tech-bg text-white p-16 text-center shadow-2xl relative">
+            <div class="glow-blob bg-blue-600 opacity-20 top-10 -left-20 float"></div>
+            <div class="glow-blob bg-emerald-600 opacity-20 bottom-10 -right-20 float" style="animation-delay: 3s;"></div>
+
+            <div class="max-w-7xl mx-auto relative z-10">
+                <h1 class="text-4xl md:text-6xl font-black mb-3 tracking-tight">EIA Performance Dashboard</h1>
+                <p class="text-blue-400 text-xs md:text-base uppercase tracking-[0.3em] font-bold mb-12 opacity-90">Endpoint Internal Audit OVERVIEW (Q1) 2026</p>
+
+                <div class="inline-block px-6 py-2 bg-blue-800/50 rounded-full border border-blue-700 mb-4">
+                    <p class="text-blue-200 uppercase tracking-widest font-black text-[10px]">Overall Compliance Performance Score</p>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-3 w-full md:w-auto">
-                    <div class="glass p-4 rounded-2xl text-center">
-                        <p class="text-[8px] font-black text-blue-300 uppercase mb-1">Issue Resolved</p>
-                        <p class="text-2xl font-black" id="health-resolved">0</p>
+                <div class="flex items-center justify-center mb-6">
+                    <h2 class="text-8xl md:text-9xl font-black tracking-tighter italic" id="hero-compliance-pct" style="padding-right: 0.15em;">0</h2>
+                    <span class="text-4xl md:text-5xl font-black text-blue-400 not-italic ml-[-0.1em]">%</span>
+                </div>
+                
+                <div class="flex flex-wrap justify-center gap-8 mt-10">
+                    <div class="text-left border-l-4 border-emerald-500 pl-4">
+                        <p class="text-[10px] text-blue-300 uppercase font-black tracking-widest">Total Audited Units</p>
+                        <p class="text-2xl font-black" id="hero-total-units">0</p>
                     </div>
-                    <div class="glass p-4 rounded-2xl text-center">
-                        <p class="text-[8px] font-black text-blue-300 uppercase mb-1">Pending Tasks</p>
-                        <p class="text-2xl font-black text-rose-400" id="health-pending">0</p>
+                    <div class="text-left border-l-4 border-blue-400 pl-4">
+                        <p class="text-[10px] text-blue-300 uppercase font-black tracking-widest">Data Last Refresh</p>
+                        <p class="text-2xl font-black" id="hero-last-update">--:--:--</p>
                     </div>
+                </div>
+                
+                <div class="mt-12 flex flex-wrap justify-center gap-4">
+                    <a href="#detailed-roadmap" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 px-10 rounded-full transition-all shadow-lg shadow-emerald-900/40 uppercase tracking-widest text-xs">
+                        Analyze Full Roadmap ↓
+                    </a>
+                    <button onclick="exportSummary()" class="bg-white hover:bg-blue-50 text-blue-900 font-black py-4 px-10 rounded-full transition-all shadow-lg shadow-blue-900/20 uppercase tracking-widest text-xs flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <span>Export CSV Summary</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="sticky-filter py-4 px-8 border-b">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <span class="font-bold text-slate-600">View by Service Team:</span>
+                    <select id="teamFilter" class="border rounded-lg px-4 py-2 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 outline-none font-bold text-blue-900" onchange="renderDashboard()">
+                        <option value="All">All Teams (Corporate View)</option>
+                        <option value="Branch">Branch Team</option>
+                        <option value="HO">HO Team</option>
+                        <option value="DC">DC Team</option>
+                    </select>
+                </div>
+                <div class="hidden md:block text-xs font-bold text-slate-400 uppercase tracking-widest">
+                    Compliance & Responsibility Matrix 2026
+                </div>
+            </div>
+        </div>
+
+        <main class="max-w-7xl mx-auto p-4 md:p-8">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-16 items-stretch">
+                <div class="lg:col-span-2 bg-gradient-to-br from-slate-900 to-blue-900 text-white p-8 rounded-[2rem] shadow-xl flex flex-col md:flex-row items-center justify-around border border-blue-800">
+                    <div class="text-center mb-6 md:mb-0">
+                        <div class="w-32 h-32 rounded-full bg-emerald-500/20 flex items-center justify-center pulse-circle mb-4 mx-auto">
+                            <div class="w-24 h-24 rounded-full bg-emerald-500 flex flex-col items-center justify-center shadow-lg shadow-emerald-500/50">
+                                <svg class="w-8 h-8 text-white mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span class="text-[8px] font-black uppercase tracking-widest">Operational</span>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-black italic tracking-tighter">System Health</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 w-full md:w-auto">
+                        <div class="glass p-4 rounded-2xl text-center">
+                            <p class="text-[8px] font-black text-blue-300 uppercase mb-1">Issue Resolved</p>
+                            <p class="text-2xl font-black" id="health-resolved">0</p>
+                        </div>
+                        <div class="glass p-4 rounded-2xl text-center">
+                            <p class="text-[8px] font-black text-blue-300 uppercase mb-1">Pending Tasks</p>
+                            <p class="text-2xl font-black text-rose-400" id="health-pending">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-[2rem] shadow-lg border">
+                    <h3 class="font-bold text-slate-500 uppercase text-[10px] tracking-widest mb-6 text-center">Responsibility Share</h3>
+                    <div class="h-48"><canvas id="teamShareChart"></canvas></div>
+                </div>
+                <div class="bg-white p-8 rounded-[2rem] shadow-lg border text-center flex flex-col justify-center">
+                    <h3 class="font-bold text-slate-500 uppercase text-[10px] tracking-widest mb-6">Issue Distribution</h3>
+                    <div class="h-40"><canvas id="pieChart"></canvas></div>
+                    <div id="grand-total" class="mt-4 text-xl font-black text-blue-900 tracking-tighter"></div>
                 </div>
             </div>
 
-            <div class="bg-white p-8 rounded-[2rem] shadow-lg border">
-                <h3 class="font-bold text-slate-500 uppercase text-[10px] tracking-widest mb-6 text-center">Responsibility Share</h3>
-                <div class="h-48"><canvas id="teamShareChart"></canvas></div>
+            <div class="mb-16">
+                <h2 class="text-2xl font-black mb-8 flex items-center text-slate-700">
+                    <span class="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm font-bold">Σ</span>
+                    Executive Summary (By Topic)
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="summary-grid"></div>
             </div>
-            
-            <div class="bg-white p-8 rounded-[2rem] shadow-lg border text-center flex flex-col justify-center">
-                <h3 class="font-bold text-slate-500 uppercase text-[10px] tracking-widest mb-6">Issue Distribution</h3>
-                <div class="h-40"><canvas id="pieChart"></canvas></div>
-                <div id="grand-total" class="mt-4 text-xl font-black text-blue-900 tracking-tighter"></div>
+
+            <div class="mb-16 bg-white p-8 rounded-[2rem] shadow-xl border border-blue-50">
+                <h3 class="font-black text-slate-700 uppercase text-xs tracking-widest mb-8 flex items-center">
+                    <span class="w-2 h-6 bg-blue-600 rounded mr-3"></span>
+                    Compliance Rate Comparison by Topic (%)
+                </h3>
+                <div class="h-64 md:h-72 w-full">
+                    <canvas id="barChart"></canvas>
+                </div>
             </div>
-        </div>
 
-        <div class="mb-16">
-            <h2 class="text-2xl font-black mb-8 flex items-center text-slate-700">
-                <span class="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm font-bold">Σ</span>
-                Executive Summary (By Topic)
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="summary-grid"></div>
-        </div>
-
-        <!-- COMPLIANCE BAR CHART (FULL WIDTH - RELOCATED) -->
-        <div class="mb-16 bg-white p-8 rounded-[2rem] shadow-xl border border-blue-50">
-            <h3 class="font-black text-slate-700 uppercase text-xs tracking-widest mb-8 flex items-center">
-                <span class="w-2 h-6 bg-blue-600 rounded mr-3"></span>
-                Compliance Rate Comparison by Topic (%)
-            </h3>
-            <div class="h-64 md:h-72 w-full">
-                <canvas id="barChart"></canvas>
+            <div id="detailed-roadmap" class="mb-20 bg-white p-10 rounded-[2.5rem] shadow-xl border border-blue-50">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-black text-slate-800 mb-3">Q1 Performance Roadmap</h2>
+                    <p class="text-slate-500 font-medium text-sm">ภาพรวมความคืบหน้าการตรวจสอบ Endpoint ทั้ง 8 หัวข้อหลัก</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4" id="roadmap-grid"></div>
             </div>
-        </div>
 
-        <!-- POSITION 3: Audit Progress Grid (Roadmap Navigator) -->
-        <div id="detailed-roadmap" class="mb-20 bg-white p-10 rounded-[2.5rem] shadow-xl border border-blue-50">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-black text-slate-800 mb-3">Q1 Performance Roadmap</h2>
-                <p class="text-slate-500 font-medium text-sm">ภาพรวมความคืบหน้าการตรวจสอบ Endpoint ทั้ง 8 หัวข้อหลัก</p>
+            <div class="mb-20">
+                <h2 class="text-2xl font-black mb-8 flex items-center text-rose-600">
+                    <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 15.652c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    สิ่งที่ต้องดำเนินการอย่างเร่งด่วน (Urgent Action Items)
+                </h2>
+                <div id="urgent-actions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4" id="roadmap-grid"></div>
-        </div>
 
-        <!-- URGENT ACTION ITEMS SECTION -->
-        <div class="mb-20">
-            <h2 class="text-2xl font-black mb-8 flex items-center text-rose-600">
-                <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 15.652c-.77 1.333.192 3 1.732 3z"></path></svg>
-                สิ่งที่ต้องดำเนินการอย่างเร่งด่วน (Urgent Action Items)
-            </h2>
-            <div id="urgent-actions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        </div>
+            <hr class="border-slate-200 mb-20">
+            <div id="detailed-reports" class="space-y-16"></div>
+        </main>
 
-        <hr class="border-slate-200 mb-20">
-
-        <!-- Detailed Reports -->
-        <div id="detailed-reports" class="space-y-16"></div>
-
-    </main>
-
-    <footer class="bg-slate-900 text-slate-400 py-12 px-8 text-center mt-20">
-        <p class="font-bold text-white mb-2 text-lg">EIA Performance Report Dashboard &copy; 2026</p>
-        <div class="flex justify-center items-center space-x-4 mb-4">
-            <p class="text-sm">จัดทำขึ้นเพื่อรายงานผลสรุปด้านความปลอดภัย Endpoint</p>
-            <span class="text-slate-700">|</span>
-            <!-- Visitor Counter Badge (Updated for stability) -->
-            <img src="https://api.visitorbadge.io/api/visitors?path=Djmanny-EIA-Dashboard&label=Visitors&labelColor=%23334155&countColor=%231e40af&style=flat" alt="Visitor Counter"/>
-        </div>
-        <p class="text-xs opacity-75 font-bold uppercase tracking-widest text-slate-500">Prepared by Endpoint Management Team</p>
-    </footer>
+        <footer class="bg-slate-900 text-slate-400 py-12 px-8 text-center mt-20">
+            <p class="font-bold text-white mb-2 text-lg">EIA Performance Dashboard &copy; 2026</p>
+            <div class="flex justify-center items-center space-x-4 mb-4">
+                <p class="text-sm">จัดทำขึ้นเพื่อรายงานผลสรุปด้านความปลอดภัย Endpoint</p>
+                <span class="text-slate-700">|</span>
+                <img src="https://api.visitorbadge.io/api/visitors?path=Djmanny-EIA-Dashboard&label=Visitors&labelColor=%23334155&countColor=%231e40af&style=flat" alt="Visitor Counter"/>
+            </div>
+            <p class="text-xs opacity-75 font-bold uppercase tracking-widest text-slate-500">Prepared by Endpoint Management Team</p>
+        </footer>
+    </div>
 
     <script>
         const rawData = {
-    "timestamp": "01/03/2569 09:22:38",
-    "sections": [
-        {
-            "id": 1,
-            "title": "1- IT Asset Incomplete Information",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 175,
-                    "N": 61
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 29,
-                    "N": 7
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 52,
-                    "N": 0
-                },
-                {
-                    "Service Team": "RIS NO Service",
-                    "Y": 16,
-                    "N": 0
-                }
+            "timestamp": "01/03/2569 09:22:38",
+            "sections": [
+                { id: 1, title: "1- IT Asset Incomplete Information", details: [{ "Service Team": "Branch", "Y": 175, "N": 61 }, { "Service Team": "DC", "Y": 29, "N": 7 }, { "Service Team": "HO", "Y": 52, "N": 0 }, { "Service Team": "RIS NO Service", "Y": 16, "N": 0 }] },
+                { id: 2, title: "2.1 - Update OS - Replace", details: [{ "Service Team": "Branch", "Y": 0, "N": 7565 }, { "Service Team": "DC", "Y": 0, "N": 863 }, { "Service Team": "HO", "Y": 37, "N": 2654 }] },
+                { id: 3, title: "2.2 - OS Require Restart", details: [{ "Service Team": "Branch", "Y": 11, "N": 777 }, { "Service Team": "DC", "Y": 0, "N": 229 }, { "Service Team": "HO", "Y": 641, "N": 723 }, { "Service Team": "Unknown", "Y": 0, "N": 3 }] },
+                { id: 4, title: "3- Antivirus Installation", details: [{ "Service Team": "Branch", "Y": 23, "N": 302 }, { "Service Team": "DC", "Y": 14, "N": 20 }, { "Service Team": "HO", "Y": 235, "N": 30 }, { "Service Team": "Unknown", "Y": 0, "N": 9 }] },
+                { id: 5, title: "4- Built-in Firewall Enable", details: [{ "Service Team": "Branch", "Y": 2989, "N": 1606 }, { "Service Team": "DC", "Y": 798, "N": 121 }, { "Service Team": "HO", "Y": 1190, "N": 256 }, { "Service Team": "Unknown", "Y": 6, "N": 7 }] },
+                { id: 6, title: "5- Client Joined Domain", details: [{ "Service Team": "Branch", "Y": 28, "N": 111 }, { "Service Team": "DC", "Y": 11, "N": 7 }, { "Service Team": "HO", "Y": 268, "N": 102 }, { "Service Team": "Unknown", "Y": 1, "N": 8 }] },
+                { id: 7, title: "6- Privileged User management", details: [{ "Service Team": "Branch", "Y": 39, "N": 1781 }, { "Service Team": "DC", "Y": 0, "N": 363 }, { "Service Team": "HO", "Y": 0, "N": 972 }, { "Service Team": "Unknown", "Y": 0, "N": 18 }] },
+                { id: 8, title: "7- Document Request Evidence", details: [{ "Service Team": "Branch", "Y": 0, "N": 3 }, { "Service Team": "DC", "Y": 0, "N": 3 }, { "Service Team": "HO", "Y": 2, "N": 1 }] }
             ]
-        },
-        {
-            "id": 2,
-            "title": "2.1 - Update OS - Replace",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 0,
-                    "N": 7565
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 0,
-                    "N": 863
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 37,
-                    "N": 2654
-                }
-            ]
-        },
-        {
-            "id": 3,
-            "title": "2.2 - OS Require Restart",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 11,
-                    "N": 777
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 0,
-                    "N": 229
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 641,
-                    "N": 723
-                },
-                {
-                    "Service Team": "Unknown",
-                    "Y": 0,
-                    "N": 3
-                }
-            ]
-        },
-        {
-            "id": 4,
-            "title": "3- Antivirus Installation",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 23,
-                    "N": 302
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 14,
-                    "N": 20
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 235,
-                    "N": 30
-                },
-                {
-                    "Service Team": "Unknown",
-                    "Y": 0,
-                    "N": 9
-                }
-            ]
-        },
-        {
-            "id": 5,
-            "title": "4- Built-in Firewall Enable",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 2989,
-                    "N": 1606
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 798,
-                    "N": 121
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 1190,
-                    "N": 256
-                },
-                {
-                    "Service Team": "Unknown",
-                    "Y": 6,
-                    "N": 7
-                }
-            ]
-        },
-        {
-            "id": 6,
-            "title": "5- Client Joined Domain",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 28,
-                    "N": 111
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 11,
-                    "N": 7
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 268,
-                    "N": 102
-                },
-                {
-                    "Service Team": "Unknown",
-                    "Y": 1,
-                    "N": 8
-                }
-            ]
-        },
-        {
-            "id": 7,
-            "title": "6- Privileged User management",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 39,
-                    "N": 1781
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 0,
-                    "N": 363
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 0,
-                    "N": 972
-                },
-                {
-                    "Service Team": "Unknown",
-                    "Y": 0,
-                    "N": 18
-                }
-            ]
-        },
-        {
-            "id": 8,
-            "title": "7- Document Request Evidence",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 0,
-                    "N": 3
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 0,
-                    "N": 3
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 2,
-                    "N": 1
-                }
-            ]
-        }
-    ]
-};
+        };
 
         let myBarChart, myPieChart, myTeamChart;
+        let targetCompliancePct = 0;
 
         function getColorClass(pct) {
             if (pct >= 80) return 'text-emerald-500 bg-emerald-50';
@@ -428,7 +304,6 @@
 
         function renderDashboard() {
             const filter = document.getElementById('teamFilter').value;
-            
             const grid = document.getElementById('summary-grid'); grid.innerHTML = '';
             const container = document.getElementById('detailed-reports'); container.innerHTML = '';
             const urgentContainer = document.getElementById('urgent-actions-container'); urgentContainer.innerHTML = '';
@@ -443,7 +318,6 @@
                 const totalNAll = sec.details.reduce((s, d) => s + d.N, 0);
                 const grandTotalSec = totalYAll + totalNAll;
 
-                // For Team Share Chart
                 sec.details.forEach(d => {
                     const team = d['Service Team'];
                     const units = d.Y + d.N;
@@ -464,105 +338,111 @@
                 const color = compliancePct > 80 ? 'text-emerald-500' : compliancePct > 50 ? 'text-orange-500' : 'text-rose-500';
                 const shareColor = sharePct > 80 ? 'text-emerald-600' : sharePct > 50 ? 'text-orange-600' : 'text-rose-600';
 
-                // Topic Grid Card
-                grid.innerHTML += `
-                    <a href="#section-${sec.id}" class="summary-card bg-white p-6 rounded-3xl shadow-sm block border">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-[10px] font-black px-2 py-1 bg-slate-100 text-slate-500 rounded uppercase">Topic ${sec.id}</span>
-                            <div class="text-right">
-                                <span class="block text-xl font-black ${color}">${compliancePct}%</span>
-                                <span class="text-[10px] font-bold ${shareColor}">Share: ${sharePct}%</span>
-                            </div>
+                grid.innerHTML += `<a href="#section-${sec.id}" class="summary-card bg-white p-6 rounded-3xl shadow-sm block border">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-[10px] font-black px-2 py-1 bg-slate-100 text-slate-500 rounded uppercase">Topic ${sec.id}</span>
+                        <div class="text-right">
+                            <span class="block text-xl font-black ${color}">${compliancePct}%</span>
+                            <span class="text-[10px] font-bold ${shareColor}">Share: ${sharePct}%</span>
                         </div>
-                        <h3 class="font-bold text-sm text-slate-700 mb-4 h-10 overflow-hidden leading-tight">${sec.title}</h3>
-                        <div class="progress-bar mb-3"><div class="progress-fill ${compliancePct > 80 ? 'bg-emerald-500' : compliancePct > 50 ? 'bg-orange-500' : 'bg-rose-500'}" style="width:${compliancePct}%"></div></div>
-                        <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-1">
-                            <span>Success: ${teamY.toLocaleString()}</span>
-                            <span>Pending: ${teamN.toLocaleString()}</span>
-                        </div>
-                    </a>
-                `;
-
-                // Roadmap Progress Circle
-                roadmapGrid.innerHTML += `
-                    <div class="text-center p-4 border rounded-2xl hover:border-blue-500 transition-all bg-slate-50/50">
-                        <div class="relative inline-flex items-center justify-center mb-3">
-                            <svg class="w-14 h-14 transform -rotate-90">
-                                <circle cx="28" cy="28" r="24" stroke="currentColor" stroke-width="4" fill="transparent" class="text-slate-200" />
-                                <circle cx="28" cy="28" r="24" stroke="currentColor" stroke-width="4" fill="transparent" stroke-dasharray="150.8" stroke-dashoffset="${150.8 - (150.8 * (compliancePct / 100))}" class="${color.replace('text-', 'stroke-')}" />
-                            </svg>
-                            <span class="absolute text-[10px] font-black">${compliancePct}%</span>
-                        </div>
-                        <p class="text-[8px] font-black uppercase text-slate-400 tracking-widest">Topic ${sec.id}</p>
                     </div>
-                `;
+                    <h3 class="font-bold text-sm text-slate-700 mb-4 h-10 overflow-hidden leading-tight">${sec.title}</h3>
+                    <div class="progress-bar mb-3"><div class="progress-fill ${compliancePct > 80 ? 'bg-emerald-500' : compliancePct > 50 ? 'bg-orange-500' : 'bg-rose-500'}" style="width:${compliancePct}%"></div></div>
+                    <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                        <span>Success: ${teamY.toLocaleString()}</span>
+                        <span>Pending: ${teamN.toLocaleString()}</span>
+                    </div>
+                </a>`;
 
-                container.innerHTML += `
-                    <section id="section-${sec.id}" class="bg-white rounded-3xl shadow-xl border overflow-hidden">
-                        <div class="p-8 bg-slate-50 border-b flex justify-between items-center">
-                            <div>
-                                <h2 class="text-xl font-black text-slate-800">${sec.title}</h2>
-                                <p class="text-xs text-slate-400 font-bold uppercase mt-1">Total items in this topic: ${grandTotalSec.toLocaleString()}</p>
+                roadmapGrid.innerHTML += `<div class="text-center p-4 border rounded-2xl hover:border-blue-500 transition-all bg-slate-50/50">
+                    <div class="relative inline-flex items-center justify-center mb-3">
+                        <svg class="w-14 h-14 transform -rotate-90">
+                            <circle cx="28" cy="28" r="24" stroke="currentColor" stroke-width="4" fill="transparent" class="text-slate-200" />
+                            <circle cx="28" cy="28" r="24" stroke="currentColor" stroke-width="4" fill="transparent" stroke-dasharray="150.8" stroke-dashoffset="${150.8 - (150.8 * (compliancePct / 100))}" class="${color.replace('text-', 'stroke-')}" />
+                        </svg>
+                        <span class="absolute text-[10px] font-black">${compliancePct}%</span>
+                    </div>
+                    <p class="text-[8px] font-black uppercase text-slate-400 tracking-widest">Topic ${sec.id}</p>
+                </div>`;
+
+                container.innerHTML += `<section id="section-${sec.id}" class="bg-white rounded-3xl shadow-xl border overflow-hidden">
+                    <div class="p-8 bg-slate-50 border-b flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                        <div>
+                            <h2 class="text-xl font-black text-slate-800">${sec.title}</h2>
+                            <p class="text-xs text-slate-400 font-bold uppercase mt-1">Total items in this topic: ${grandTotalSec.toLocaleString()}</p>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="relative">
+                                <input type="text" placeholder="Search team..." onkeyup="filterTable(this, 'table-${sec.id}')" class="pl-10 pr-4 py-2 border rounded-full text-xs font-bold focus:ring-2 focus:ring-blue-500 outline-none shadow-sm">
+                                <svg class="w-4 h-4 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2"></path></svg>
                             </div>
-                            <span class="px-4 py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] font-black uppercase tracking-widest">TEAM: ${filter}</span>
+                            <span class="px-4 py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] font-black uppercase tracking-widest whitespace-nowrap">TEAM: ${filter}</span>
                         </div>
-                        <div class="p-8 overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead>
-                                    <tr class="text-slate-400 text-[10px] font-black uppercase border-b tracking-widest">
-                                        <th class="pb-4 px-4">Service Team</th>
-                                        <th class="pb-4 px-4 text-center">Y (Success)</th>
-                                        <th class="pb-4 px-4 text-center">N (Pending)</th>
-                                        <th class="pb-4 px-4 text-center">Compliance Rate</th>
-                                        <th class="pb-4 px-4 text-center">Responsibility Share</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-50">
-                                    ${filtered.map(d => {
-                                        const rowTotal = d.Y + d.N;
-                                        const comp = rowTotal > 0 ? Math.round((d.Y / rowTotal) * 100) : 0;
-                                        const share = grandTotalSec > 0 ? Math.round((rowTotal / grandTotalSec) * 100) : 0;
-                                        const compStyle = getColorClass(comp);
-                                        const shareStyle = getColorClass(share);
-                                        return `<tr>
-                                            <td class="py-5 px-4 font-bold text-slate-700">${d['Service Team']}</td>
-                                            <td class="py-5 px-4 text-center text-emerald-600 font-black">${d.Y.toLocaleString()}</td>
-                                            <td class="py-5 px-4 text-center text-rose-600 font-black">${d.N.toLocaleString()}</td>
-                                            <td class="py-5 px-4 text-center"><span class="px-3 py-1 rounded-full text-xs font-black ${compStyle}">${comp}%</span></td>
-                                            <td class="py-5 px-4 text-center"><span class="px-3 py-1 rounded-full text-xs font-black ${shareStyle}">${share}%</span></td>
-                                        </tr>`;
-                                    }).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-                `;
+                    </div>
+                    <div class="p-8 overflow-x-auto">
+                        <table class="w-full text-left" id="table-${sec.id}">
+                            <thead>
+                                <tr class="text-slate-400 text-[10px] font-black uppercase border-b tracking-widest">
+                                    <th class="pb-4 px-4">Service Team</th>
+                                    <th class="pb-4 px-4 text-center">Y (Success)</th>
+                                    <th class="pb-4 px-4 text-center">N (Pending)</th>
+                                    <th class="pb-4 px-4 text-center">Compliance Rate</th>
+                                    <th class="pb-4 px-4 text-center">Responsibility Share</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50">
+                                ${filtered.map(d => {
+                                    const rowTotal = d.Y + d.N;
+                                    const comp = rowTotal > 0 ? Math.round((d.Y / rowTotal) * 100) : 0;
+                                    const share = grandTotalSec > 0 ? Math.round((rowTotal / grandTotalSec) * 100) : 0;
+                                    const compStyle = getColorClass(comp);
+                                    const shareStyle = getColorClass(share);
+                                    return `<tr>
+                                        <td class="py-5 px-4 font-bold text-slate-700">${d['Service Team']}</td>
+                                        <td class="py-5 px-4 text-center text-emerald-600 font-black">${d.Y.toLocaleString()}</td>
+                                        <td class="py-5 px-4 text-center text-rose-600 font-black">${d.N.toLocaleString()}</td>
+                                        <td class="py-5 px-4 text-center">
+                                            <div class="flex flex-col items-center justify-center space-y-1">
+                                                <span class="px-3 py-1 rounded-full text-xs font-black ${compStyle}">${comp}%</span>
+                                                <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                                                    <div class="h-full ${compStyle.split(' ')[0].replace('text-', 'bg-')}" style="width: ${comp}%"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-5 px-4 text-center">
+                                            <div class="flex flex-col items-center justify-center space-y-1">
+                                                <span class="px-3 py-1 rounded-full text-xs font-black ${shareStyle}">${share}%</span>
+                                                <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                                                    <div class="h-full ${shareStyle.split(' ')[0].replace('text-', 'bg-')}" style="width: ${share}%"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>`;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>`;
             });
 
-            // Update Header (Sample 1)
             const globalPct = globalTotal > 0 ? Math.round((globalY / globalTotal) * 100) : 0;
-            document.getElementById('hero-compliance-pct').innerHTML = `${globalPct}<span class="text-4xl ml-2 text-blue-400 not-italic">%</span>`;
+            targetCompliancePct = globalPct;
             document.getElementById('hero-total-units').innerText = globalTotal.toLocaleString();
             document.getElementById('hero-last-update').innerText = rawData.timestamp;
-
-            // Update Health Monitor (Sample 2)
             document.getElementById('health-resolved').innerText = globalY.toLocaleString();
             document.getElementById('health-pending').innerText = globalN.toLocaleString();
 
             urgentItems.sort((a, b) => b.pending - a.pending).slice(0, 3).forEach(item => {
-                urgentContainer.innerHTML += `
-                    <div class="action-card p-6 rounded-2xl shadow-md flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-rose-600 font-black text-[10px] uppercase tracking-widest opacity-70 border border-rose-200 px-2 py-0.5 rounded">Priority</span>
-                                <span class="bg-rose-100 text-rose-700 text-[10px] font-black px-2 py-0.5 rounded uppercase">Urgent</span>
-                            </div>
-                            <h4 class="font-black text-slate-800 mb-2">${item.title}</h4>
-                            <p class="text-sm text-slate-500 leading-relaxed mb-4">พบงานที่ค้างอยู่ <span class="font-bold text-rose-600 underline">${item.pending.toLocaleString()} รายการ</span></p>
+                urgentContainer.innerHTML += `<div class="action-card p-6 rounded-2xl shadow-md flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-rose-100 text-rose-700 text-[10px] font-black px-2 py-0.5 rounded uppercase">Urgent</span>
                         </div>
-                        <a href="#section-${item.id}" class="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:text-blue-800">Analyze Topic &rarr;</a>
+                        <h4 class="font-black text-slate-800 mb-2">${item.title}</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed mb-4">พบงานที่ค้างอยู่ <span class="font-bold text-rose-600 underline">${item.pending.toLocaleString()} รายการ</span></p>
                     </div>
-                `;
+                    <a href="#section-${item.id}" class="text-[10px] font-black text-blue-600 uppercase hover:text-blue-800">Analyze Topic &rarr;</a>
+                </div>`;
             });
 
             updateCharts(labels, percentages, globalY, globalN, teamWorkload);
@@ -578,47 +458,20 @@
                 type: 'bar', 
                 data: { 
                     labels: l.map(x=>x.substring(0,15)+'...'), 
-                    datasets: [{ 
-                        label: 'Compliance %',
-                        data: p, 
-                        backgroundColor: p.map(v=>v>=80?'#10b981':v>=50?'#f59e0b':'#ef4444'), 
-                        borderRadius: 12,
-                        barThickness: 'flex',
-                        maxBarThickness: 40
-                    }] 
+                    datasets: [{ label: 'Compliance %', data: p, backgroundColor: p.map(v=>v>=80?'#10b981':v>=50?'#f59e0b':'#ef4444'), borderRadius: 12, barThickness: 'flex', maxBarThickness: 40 }] 
                 },
                 options: { 
                     maintainAspectRatio: false, 
-                    indexAxis: 'x',
-                    plugins: { 
-                        legend: { display: false },
-                        tooltip: { backgroundColor: '#1e293b', padding: 12, titleFont: { size: 14 } }
-                    }, 
-                    scales: { 
-                        y: { beginAtZero: true, max: 100, grid: { display: false }, ticks: { font: { weight: 'bold' } } },
-                        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
-                    } 
+                    plugins: { legend: { display: false } }, 
+                    scales: { y: { beginAtZero: true, max: 100, grid: { display: false } }, x: { grid: { display: false } } } 
                 }
             });
 
-            const teamLabels = Object.keys(tw);
-            const teamData = Object.values(tw);
+            const teamLabels = Object.keys(tw), teamData = Object.values(tw);
             myTeamChart = new Chart(document.getElementById('teamShareChart'), {
                 type: 'pie', 
-                data: { 
-                    labels: teamLabels, 
-                    datasets: [{ 
-                        data: teamData, 
-                        backgroundColor: ['#1e40af', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe'],
-                        hoverOffset: 4
-                    }] 
-                },
-                options: { 
-                    maintainAspectRatio: false, 
-                    plugins: { 
-                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } 
-                    } 
-                }
+                data: { labels: teamLabels, datasets: [{ data: teamData, backgroundColor: ['#1e40af', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe'] }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
             });
 
             myPieChart = new Chart(document.getElementById('pieChart'), {
@@ -627,51 +480,70 @@
             });
         }
 
-        // Back to Top Logic
-        window.onscroll = function() {
-            const btn = document.getElementById("backToTop");
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                btn.style.display = "block";
-            } else {
-                btn.style.display = "none";
-            }
-        };
+        function dismissModal() {
+            const modal = document.getElementById("login-modal");
+            modal.style.opacity = "0";
+            setTimeout(() => {
+                modal.style.display = "none";
+                document.getElementById("main-content").classList.add("active");
+                animateValue(document.getElementById("hero-compliance-pct"), 0, targetCompliancePct, 2000);
+            }, 500);
+        }
 
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function filterTable(input, tableId) {
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById(tableId);
+            const tr = table.getElementsByTagName("tr");
+            for (let i = 1; i < tr.length; i++) {
+                const td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    const txtValue = td.textContent || td.innerText;
+                    tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+                }
+            }
         }
 
         function exportSummary() {
             const filter = document.getElementById('teamFilter').value;
             let csv = "\uFEFFTopic ID,Topic Name,Service Team,Success (Y),Pending (N),Total,Compliance %\n";
-            
             rawData.sections.forEach(sec => {
                 const filtered = filter === 'All' ? sec.details : sec.details.filter(d => d['Service Team'] === filter);
                 const teamY = filtered.reduce((s, d) => s + d.Y, 0);
                 const teamN = filtered.reduce((s, d) => s + d.N, 0);
                 const teamTotal = teamY + teamN;
                 const compliancePct = teamTotal > 0 ? Math.round((teamY / teamTotal) * 100) : 0;
-                
-                // Clean CSV data (escape commas)
-                const safeTitle = `"${sec.title.replace(/"/g, '""')}"`;
-                csv += `${sec.id},${safeTitle},${filter},${teamY},${teamN},${teamTotal},${compliancePct}%\n`;
+                csv += `${sec.id},"${sec.title.replace(/"/g, '""')}",${filter},${teamY},${teamN},${teamTotal},${compliancePct}%\n`;
             });
-
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
+            link.setAttribute("href", URL.createObjectURL(blob));
             link.setAttribute("download", `EIA_Summary_${filter}_${new Date().getTime()}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
             link.click();
-            document.body.removeChild(link);
         }
 
-        renderDashboard();
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        window.onscroll = function() {
+            const btn = document.getElementById("backToTop");
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) btn.style.display = "block";
+            else btn.style.display = "none";
+        };
+
+        const userProfile = "คุณผู้ใช้งาน";
+        window.onload = () => {
+            document.getElementById("welcome-msg").innerText = `สวัสดี ${userProfile}`;
+            renderDashboard();
+        };
     </script>
 </body>
 </html>
