@@ -86,10 +86,14 @@
                 </div>
             </div>
             
-            <div class="mt-12 flex justify-center">
+            <div class="mt-12 flex flex-wrap justify-center gap-4">
                 <a href="#detailed-roadmap" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 px-10 rounded-full transition-all shadow-lg shadow-emerald-900/40 uppercase tracking-widest text-xs">
                     Analyze Full Roadmap ↓
                 </a>
+                <button onclick="exportSummary()" class="bg-white hover:bg-blue-50 text-blue-900 font-black py-4 px-10 rounded-full transition-all shadow-lg shadow-blue-900/20 uppercase tracking-widest text-xs flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    <span>Export CSV Summary</span>
+                </button>
             </div>
         </div>
         <!-- Decorative Background -->
@@ -638,6 +642,33 @@
                 top: 0,
                 behavior: 'smooth'
             });
+        }
+
+        function exportSummary() {
+            const filter = document.getElementById('teamFilter').value;
+            let csv = "\uFEFFTopic ID,Topic Name,Service Team,Success (Y),Pending (N),Total,Compliance %\n";
+            
+            rawData.sections.forEach(sec => {
+                const filtered = filter === 'All' ? sec.details : sec.details.filter(d => d['Service Team'] === filter);
+                const teamY = filtered.reduce((s, d) => s + d.Y, 0);
+                const teamN = filtered.reduce((s, d) => s + d.N, 0);
+                const teamTotal = teamY + teamN;
+                const compliancePct = teamTotal > 0 ? Math.round((teamY / teamTotal) * 100) : 0;
+                
+                // Clean CSV data (escape commas)
+                const safeTitle = `"${sec.title.replace(/"/g, '""')}"`;
+                csv += `${sec.id},${safeTitle},${filter},${teamY},${teamN},${teamTotal},${compliancePct}%\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `EIA_Summary_${filter}_${new Date().getTime()}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         renderDashboard();

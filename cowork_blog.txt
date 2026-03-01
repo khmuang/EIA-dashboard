@@ -1,0 +1,25 @@
+# Elevate Your Workflow with Claude Cowork
+
+In the rapidly evolving landscape of AI, Anthropic has introduced a game-changer: **Claude Cowork**. This agentic feature, currently in research preview within the Claude Desktop app, transforms Claude from a simple chatbot into a proactive partner capable of handling complex, multi-step tasks autonomously.
+
+### Key Features
+Unlike standard AI interfaces, Claude Cowork excels at **Agentic Execution**. It can plan, execute, and verify workflows by interacting directly with your local files and web browser. Key highlights include:
+- **Local File Access:** Grant Claude access to specific folders to read, create, or edit documents (PDFs, Excel, Markdown) on your machine.
+- **Office Integration:** Build spreadsheets in Excel or generate slides in PowerPoint with native-feeling precision.
+- **Browser Automation:** Conduct deep web research and interact with online tools via a dedicated extension.
+- **Security:** Tasks run in a secure, sandboxed environment to protect your system.
+
+### Pricing and Availability
+Claude Cowork is available to users on paid plans:
+- **Pro Plan ($20/mo):** Standard access with reasonable usage limits.
+- **Team Plan ($30/mo per user):** Enhanced capabilities with higher limits (often requiring a "Premium Seat" for full power).
+- **Enterprise:** Highest usage tiers for large-scale operations.
+
+### Powerful Use Cases
+From small business owners to corporate analysts, Cowork serves diverse needs:
+- **Financial Analysis:** Extracting data from receipts into formatted Excel sheets.
+- **Deep Research:** Summarizing web data into Markdown and drafting presentations.
+- **File Organization:** Automatically categorizing and renaming messy local directories.
+- **Legal Review:** Identifying patterns or inconsistencies across hundreds of documents.
+
+Claude Cowork isn't just a tool; it's a productivity multiplier that bridges the gap between AI conversation and real-world execution.

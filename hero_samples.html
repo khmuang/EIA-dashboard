@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Hero Samples</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background: #f1f5f9; padding: 40px 20px; }
+        .sample-box { background: white; border-radius: 24px; overflow: hidden; margin-bottom: 80px; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0; }
+        .label { background: #334155; color: white; padding: 10px 25px; font-weight: 800; display: inline-block; border-bottom-right-radius: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* Version 2 Pulse Animation */
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .pulse-circle { animation: pulse-green 2s infinite; }
+        
+        /* Glassmorphism for Version 2 */
+        .glass { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
+    </style>
+</head>
+<body>
+
+    <h1 class="text-3xl font-black text-center mb-12 text-slate-800">เลือกสไตล์ First Impression ที่คุณชอบ</h1>
+
+    <!-- SAMPLE 1: Executive Scorecard -->
+    <div class="sample-box">
+        <div class="label">แบบที่ 1: Executive Scorecard</div>
+        <div class="bg-blue-900 text-white p-16 text-center relative overflow-hidden">
+            <div class="relative z-10">
+                <p class="text-blue-300 uppercase tracking-widest font-bold mb-4">Overall Compliance Rate</p>
+                <h2 class="text-9xl font-black mb-6 tracking-tighter italic">92<span class="text-5xl ml-2 text-blue-400 font-bold not-italic">%</span></h2>
+                <div class="flex justify-center space-x-8 mt-10">
+                    <div class="text-left border-l-4 border-emerald-500 pl-4">
+                        <p class="text-xs text-blue-300 uppercase font-bold">Total Units</p>
+                        <p class="text-2xl font-black">15,420</p>
+                    </div>
+                    <div class="text-left border-l-4 border-blue-400 pl-4">
+                        <p class="text-xs text-blue-300 uppercase font-bold">Audit Status</p>
+                        <p class="text-2xl font-black uppercase">Active</p>
+                    </div>
+                </div>
+                <button class="mt-12 bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 px-10 rounded-full transition-all shadow-lg shadow-emerald-900/40 uppercase tracking-widest text-sm">
+                    Analyze Full Details ↓
+                </button>
+            </div>
+            <!-- Decorative shapes -->
+            <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-blue-800 rounded-full opacity-20"></div>
+            <div class="absolute -left-10 -top-10 w-48 h-48 bg-blue-700 rounded-full opacity-10"></div>
+        </div>
+    </div>
+
+    <!-- SAMPLE 2: System Health Monitor -->
+    <div class="sample-box">
+        <div class="label">แบบที่ 2: System Health Monitor</div>
+        <div class="bg-gradient-to-br from-slate-900 to-blue-900 text-white p-16 flex flex-col md:flex-row items-center justify-around">
+            <div class="text-center mb-10 md:mb-0">
+                <div class="w-48 h-48 rounded-full bg-emerald-500/20 flex items-center justify-center pulse-circle mb-6">
+                    <div class="w-32 h-32 rounded-full bg-emerald-500 flex flex-col items-center justify-center shadow-lg shadow-emerald-500/50">
+                        <svg class="w-12 h-12 text-white mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-xs font-black uppercase tracking-widest">Healthy</span>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-black italic tracking-tighter">Endpoint Status</h3>
+                <p class="text-emerald-400 font-bold uppercase text-xs mt-1">Operational & Secure</p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="glass p-6 rounded-3xl">
+                    <p class="text-[10px] font-black text-blue-300 uppercase mb-2">Security Compliance</p>
+                    <p class="text-3xl font-black">94.8%</p>
+                </div>
+                <div class="glass p-6 rounded-3xl">
+                    <p class="text-[10px] font-black text-blue-300 uppercase mb-2">Issue Resolved</p>
+                    <p class="text-3xl font-black">882</p>
+                </div>
+                <div class="glass p-6 rounded-3xl col-span-2">
+                    <p class="text-[10px] font-black text-blue-300 uppercase mb-2">Urgent Tasks Waiting</p>
+                    <p class="text-3xl font-black text-rose-400">12 <span class="text-xs text-white opacity-60 ml-2">Items</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SAMPLE 3: Audit Progress Grid -->
+    <div class="sample-box">
+        <div class="label">แบบที่ 3: Audit Progress Grid</div>
+        <div class="bg-white p-16">
+            <div class="max-w-4xl mx-auto text-center mb-12">
+                <h2 class="text-4xl font-black text-slate-800 mb-4">Q1 Performance Roadmap</h2>
+                <p class="text-slate-500 font-medium leading-relaxed">สรุปสถานะการตรวจสอบ Endpoint ทั้ง 8 หัวข้อหลัก (Topics) ประจำไตรมาสที่ 1</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- Sample Progress Circle Icons -->
+                <div class="text-center p-6 border rounded-3xl hover:border-blue-500 transition-all">
+                    <div class="relative inline-flex items-center justify-center mb-4">
+                        <svg class="w-20 h-20 transform -rotate-90">
+                            <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="6" fill="transparent" class="text-slate-100" />
+                            <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="6" fill="transparent" stroke-dasharray="219.9" stroke-dashoffset="22" class="text-blue-600" />
+                        </svg>
+                        <span class="absolute text-sm font-black">90%</span>
+                    </div>
+                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Topic 01</p>
+                    <p class="text-xs font-bold text-slate-700 mt-1">IT Asset Info</p>
+                </div>
+                <!-- Add more as needed for visualization -->
+                <div class="text-center p-6 border rounded-3xl bg-blue-50 border-blue-200">
+                    <div class="relative inline-flex items-center justify-center mb-4">
+                        <svg class="w-20 h-20 transform -rotate-90">
+                            <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="6" fill="transparent" class="text-blue-100" />
+                            <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="6" fill="transparent" stroke-dasharray="219.9" stroke-dashoffset="110" class="text-blue-500" />
+                        </svg>
+                        <span class="absolute text-sm font-black text-blue-600">50%</span>
+                    </div>
+                    <p class="text-[10px] font-black uppercase text-blue-400 tracking-widest">Topic 02</p>
+                    <p class="text-xs font-bold text-slate-700 mt-1">OS Replace</p>
+                </div>
+                <div class="text-center p-6 border rounded-3xl">
+                    <div class="relative inline-flex items-center justify-center mb-4 text-emerald-500">
+                        <svg class="w-20 h-20 transform -rotate-90">
+                            <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="6" fill="transparent" class="text-slate-100" />
+                            <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="6" fill="transparent" stroke-dasharray="219.9" stroke-dashoffset="0" class="text-emerald-500" />
+                        </svg>
+                        <svg class="absolute w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Topic 03</p>
+                    <p class="text-xs font-bold text-slate-700 mt-1">Antivirus</p>
+                </div>
+                <div class="text-center p-6 border rounded-3xl">
+                    <div class="relative inline-flex items-center justify-center mb-4">
+                        <svg class="w-20 h-20 transform -rotate-90 text-rose-500">
+                            <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="6" fill="transparent" class="text-slate-100" />
+                            <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="6" fill="transparent" stroke-dasharray="219.9" stroke-dashoffset="180" class="text-rose-500" />
+                        </svg>
+                        <span class="absolute text-sm font-black">18%</span>
+                    </div>
+                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Topic 04</p>
+                    <p class="text-xs font-bold text-slate-700 mt-1">Firewall</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
