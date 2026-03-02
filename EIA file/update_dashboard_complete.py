@@ -106,7 +106,7 @@ if __name__ == "__main__":
             {"id": 2, "title": "2.1 - Update OS - Replace", "details": process_os_replace()},
             {"id": 3, "title": "2.2 - OS Require Restart", "details": process_generic('2.2 - Require Restart.xlsx', 'Restart', 2, 2, 20)},
             {"id": 4, "title": "3- Antivirus Installation", "details": process_generic('3- Antivirus not Install.xlsx', 'No AV', 2, 2, 20)},
-            {"id": 5, "title": "4- Built-in Firewall Enable", "details": process_generic('4- Built-in Firewall are not enable.xlsx', 'No firewall', 3, 2, 21)},
+            {"id": 5, "title": "4- Built-in Firewall Enable", "details": process_generic('4- Built-in Firewall are not enable.xlsx', 'No AV', 3, 2, 21)},
             {"id": 6, "title": "5- Client Joined Domain", "details": process_generic('5- Client devices are not joined to the domain.xlsx', 'Not join', 3, 2, 21)},
             {"id": 7, "title": "6- Privileged User management", "details": process_generic('6- Privileged User management.xlsx', 'Admin group', 3, 2, 21)},
             {"id": 8, "title": "7- Document Request Evidence", "details": process_generic('7- Document request privileged user.xlsx', 'Document request', 2, 2, 6)}

@@ -283,7 +283,7 @@
 
     <script>
         const rawData = {
-    "timestamp": "02/03/2569 10:25:34",
+    "timestamp": "02/03/2569 10:44:31",
     "sections": [
         {
             "id": 1,
@@ -387,7 +387,28 @@
         {
             "id": 5,
             "title": "4- Built-in Firewall Enable",
-            "details": []
+            "details": [
+                {
+                    "Service Team": "Branch",
+                    "Y": 0,
+                    "N": 325
+                },
+                {
+                    "Service Team": "DC",
+                    "Y": 0,
+                    "N": 34
+                },
+                {
+                    "Service Team": "HO",
+                    "Y": 0,
+                    "N": 265
+                },
+                {
+                    "Service Team": "Unknown",
+                    "Y": 0,
+                    "N": 9
+                }
+            ]
         },
         {
             "id": 6,
@@ -481,11 +502,24 @@
             const urgentContainer = document.getElementById('urgent-actions-container'); urgentContainer.innerHTML = '';
             const roadmapGrid = document.getElementById('roadmap-grid'); roadmapGrid.innerHTML = '';
             
+            // Warm Color Palette for Cards
+            const cardStyles = [
+                { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', icon: 'bg-amber-100', accent: 'text-amber-500' },
+                { bg: 'bg-rose-50', border: 'border-rose-200', text: 'text-rose-700', icon: 'bg-rose-100', accent: 'text-rose-500' },
+                { bg: 'bg-indigo-50', border: 'border-indigo-200', text: 'text-indigo-700', icon: 'bg-indigo-100', accent: 'text-indigo-500' },
+                { bg: 'bg-teal-50', border: 'border-teal-200', text: 'text-teal-700', icon: 'bg-teal-100', accent: 'text-teal-500' },
+                { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-700', icon: 'bg-orange-100', accent: 'text-orange-500' },
+                { bg: 'bg-sky-50', border: 'border-sky-200', text: 'text-sky-700', icon: 'bg-sky-100', accent: 'text-sky-500' },
+                { bg: 'bg-fuchsia-50', border: 'border-fuchsia-200', text: 'text-fuchsia-700', icon: 'bg-fuchsia-100', accent: 'text-fuchsia-500' },
+                { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700', icon: 'bg-emerald-100', accent: 'text-emerald-500' }
+            ];
+
             let globalY = 0, globalN = 0, globalTotal = 0;
             const labels = [], percentages = [], urgentItems = [];
             const teamWorkload = {};
 
-            rawData.sections.forEach(sec => {
+            rawData.sections.forEach((sec, index) => {
+                const style = cardStyles[index % cardStyles.length];
                 const totalYAll = sec.details.reduce((s, d) => s + d.Y, 0);
                 const totalNAll = sec.details.reduce((s, d) => s + d.N, 0);
                 const grandTotalSec = totalYAll + totalNAll;
@@ -510,9 +544,9 @@
                 const color = compliancePct > 80 ? 'text-emerald-500' : compliancePct > 50 ? 'text-orange-500' : 'text-rose-500';
                 const shareColor = sharePct > 80 ? 'text-emerald-600' : sharePct > 50 ? 'text-orange-600' : 'text-rose-600';
 
-                grid.innerHTML += `<a href="#section-${sec.id}" class="summary-card bg-white p-6 rounded-3xl shadow-sm block border">
+                grid.innerHTML += `<a href="#section-${sec.id}" class="summary-card ${style.bg} p-6 rounded-3xl shadow-sm block border ${style.border}">
                     <div class="flex justify-between items-start mb-4">
-                        <span class="text-[10px] font-black px-2 py-1 bg-slate-100 text-slate-500 rounded uppercase">Topic ${sec.id}</span>
+                        <span class="text-[10px] font-black px-2 py-1 ${style.icon} ${style.text} rounded uppercase">Topic ${sec.id}</span>
                         <div class="text-right">
                             <span class="block text-xl font-black ${color}">${compliancePct}%</span>
                             <span class="text-[10px] font-bold ${shareColor}">Share: ${sharePct}%</span>
