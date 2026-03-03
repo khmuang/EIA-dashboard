@@ -110,6 +110,10 @@
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
         .pulse-circle { animation: pulse-green 2s infinite; }
+        
+        @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .animate-pulse-soft { animation: pulse-soft 2s infinite; }
+
         .glass { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
 
         /* PDF Export Styling */
@@ -126,7 +130,6 @@
 </head>
 <body class="text-slate-800">
 
-    <!-- Back to Top Button (Fixed outside main-content) -->
     <button id="backToTop" title="Go to top" onclick="scrollToTop()">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
@@ -301,7 +304,7 @@
 
     <script>
         const rawData = {
-    "timestamp": "03/03/2569 09:12:07",
+    "timestamp": "03/03/2569 10:11:21",
     "sections": [
         {
             "id": 1,
@@ -625,23 +628,41 @@
                                     const share = grandTotalSec > 0 ? Math.round((rowTotal / grandTotalSec) * 100) : 0;
                                     const compStyle = getColorClass(comp);
                                     const shareStyle = getColorClass(share);
+                                    
+                                    const gap = 95 - comp;
+                                    let gapHtml = '';
+                                    if (gap > 0) {
+                                        gapHtml = `
+                                            <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden flex border border-slate-200 mt-2">
+                                                <div class="h-full ${compStyle.split(' ')[0].replace('text-', 'bg-')}" style="width: ${comp}%"></div>
+                                                <div class="bg-rose-400/50 h-full animate-pulse-soft" style="width: ${gap}%"></div>
+                                            </div>
+                                            <p class="text-[8px] font-bold text-rose-500 mt-1 uppercase tracking-tighter">Need ${gap}% more to reach 95% Goal</p>
+                                        `;
+                                    } else {
+                                        gapHtml = `
+                                            <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden flex border border-slate-200 mt-2">
+                                                <div class="h-full ${compStyle.split(' ')[0].replace('text-', 'bg-')}" style="width: 100%"></div>
+                                            </div>
+                                            <p class="text-[8px] font-bold text-emerald-500 mt-1 uppercase tracking-tighter">✨ Goal Reached</p>
+                                        `;
+                                    }
+
                                     return `<tr>
                                         <td class="py-5 px-4 font-bold text-slate-700">${d['Service Team']}</td>
                                         <td class="py-5 px-4 text-center text-emerald-600 font-black">${d.Y.toLocaleString()}</td>
                                         <td class="py-5 px-4 text-center text-rose-600 font-black">${d.N.toLocaleString()}</td>
-                                        <td class="py-5 px-4 text-center">
-                                            <div class="flex flex-col items-center justify-center space-y-1">
-                                                <span class="px-3 py-1 rounded-full text-xs font-black ${compStyle}">${comp}%</span>
-                                                <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-                                                    <div class="h-full ${compStyle.split(' ')[0].replace('text-', 'bg-')}" style="width: ${comp}%"></div>
-                                                </div>
+                                        <td class="py-5 px-4 text-center w-48">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="px-3 py-1 rounded-full text-xs font-black ${compStyle} mb-1">${comp}%</span>
+                                                ${gapHtml}
                                             </div>
                                         </td>
                                         <td class="py-5 px-4 text-center">
                                             <div class="flex flex-col items-center justify-center space-y-1">
                                                 <span class="px-3 py-1 rounded-full text-xs font-black ${shareStyle}">${share}%</span>
                                                 <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-                                                    <div class="h-full ${compStyle.split(' ')[0].replace('text-', 'bg-')}" style="width: ${share}%"></div>
+                                                    <div class="h-full ${shareStyle.split(' ')[0].replace('text-', 'bg-')}" style="width: ${share}%"></div>
                                                 </div>
                                             </div>
                                         </td>
@@ -709,9 +730,7 @@
         }
 
         function dismissModal() {
-            // Reset scroll to top before revealing content
             window.scrollTo({ top: 0, behavior: 'instant' });
-            
             const modal = document.getElementById("login-modal");
             modal.style.opacity = "0";
             setTimeout(() => {
