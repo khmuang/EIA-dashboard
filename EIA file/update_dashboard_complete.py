@@ -5,12 +5,21 @@ from datetime import datetime
 import shutil
 import subprocess
 import re
+import mysql.connector
 
 # --- CONFIGURATION ---
 EXCEL_DIR = "EIA file"
 BACKUP_DIR = os.path.join(EXCEL_DIR, "backup file")
 OUTPUT_HTML = "index.html"
 GITHUB_REPO_URL = "https://github.com/khmuang/EIA-dashboard.git"
+
+# MySQL Config (XAMPP Default)
+DB_CONFIG = {
+    'user': 'root',
+    'password': '',
+    'host': '127.0.0.1',
+    'database': 'eia_compliance'
+}
 
 FILES = {
     1: "1- IT Asset incomplete information.xlsx",
@@ -48,8 +57,30 @@ def backup_files():
             shutil.copy2(src, dst)
     print("Backup completed successfully.")
 
+def load_excel_with_auto_header(path, sheet_name=0):
+    """Try to find the correct header row by looking for 'Serviced By' or 'Service Team'"""
+    try:
+        # Load first 20 rows to find header
+        df_raw = pd.read_excel(path, sheet_name=sheet_name, header=None, nrows=20)
+        header_row = 0
+        
+        # Support multiple possible column names
+        possible_headers = ['serviced by', 'service by', 'service team', 'serviced team']
+        
+        for i, row in df_raw.iterrows():
+            row_vals = [str(val).strip().lower() for val in row.values if pd.notnull(val)]
+            if any(h in row_vals for h in possible_headers):
+                header_row = i
+                break
+        
+        # Reload with identified header row
+        return pd.read_excel(path, sheet_name=sheet_name, header=header_row)
+    except Exception as e:
+        print(f"Error reading {path}: {e}")
+        return pd.DataFrame()
+
 def get_serviced_by_col(df):
-    possible_names = ['Serviced By', 'Service By', 'serviced by', 'service by']
+    possible_names = ['Serviced By', 'Service By', 'Service Team', 'Service team', 'Serviced team']
     for name in possible_names:
         if name in df.columns:
             return name
@@ -70,29 +101,43 @@ def process_data():
             sheets = ['No Company', 'No BU', 'No Group', 'No Location']
             all_df = []
             for s in sheets:
-                try:
-                    df_temp = pd.read_excel(path, sheet_name=s)
-                    col = get_serviced_by_col(df_temp)
-                    if col:
-                        all_df.append(df_temp[[col]].rename(columns={col: 'Serviced By'}))
-                except: continue
-            df = pd.concat(all_df) if all_df else pd.DataFrame(columns=['Serviced By'])
+                df_temp = load_excel_with_auto_header(path, sheet_name=s)
+                col = get_serviced_by_col(df_temp)
+                if col:
+                    all_df.append(df_temp[[col]].rename(columns={col: 'Service Team'}))
+            df = pd.concat(all_df) if all_df else pd.DataFrame(columns=['Service Team'])
         # Topic 5 special sheet
         elif fid == 5:
-            try: df = pd.read_excel(path, sheet_name='No firewall')
-            except: df = pd.read_excel(path)
+            df = load_excel_with_auto_header(path, sheet_name='No firewall')
+            if df.empty or get_serviced_by_col(df) is None:
+                df = load_excel_with_auto_header(path)
         else:
-            df = pd.read_excel(path)
+            df = load_excel_with_auto_header(path)
 
         col = get_serviced_by_col(df)
-        counts = df[col].value_counts() if col else pd.Series()
+        if col:
+            # Normalize and count
+            df[col] = df[col].astype(str).str.strip()
+            counts = df[col].value_counts()
+        else:
+            print(f"Warning: Could not find team column in {name}")
+            counts = pd.Series()
         
         details = []
+        print(f"  > Topic {fid}: {name}")
         for team in ['Branch', 'HO', 'DC']:
             n_val = int(counts.get(team, 0))
+            
             # Calculate Y based on Fixed Population constants
-            total_for_team = TOPIC_TOTALS.get(fid, {}).get(team, 100)
+            total_for_team = TOPIC_TOTALS.get(fid, {}).get(team, 0)
+            
+            # Fallback if total is missing or too small
+            if total_for_team < n_val:
+                print(f"    [!] Warning: {team} pending ({n_val}) > total ({total_for_team}). Adjusting total to match pending.")
+                total_for_team = n_val 
+                
             y_val = max(0, total_for_team - n_val)
+            print(f"    - {team}: Y={y_val}, N={n_val} (Total={total_for_team})")
             details.append({"Service Team": team, "Y": y_val, "N": n_val})
             
         sections.append({
@@ -110,6 +155,43 @@ def process_data():
     }
     return data
 
+def sync_to_mysql(data, quarter, year):
+    print(f"\n--- Syncing Data to MySQL (Quarter: {quarter}, Year: {year}) ---")
+    try:
+        cnx = mysql.connector.connect(**DB_CONFIG)
+        cursor = cnx.cursor()
+
+        # Clean old records for this Q/Year
+        delete_query = "DELETE FROM audit_data WHERE quarter = %s AND audit_year = %s"
+        cursor.execute(delete_query, (quarter, year))
+
+        insert_query = (
+            "INSERT INTO audit_data (topic_id, topic_name, team_name, success_y, pending_n, quarter, audit_year) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        )
+
+        records = []
+        for sec in data['sections']:
+            for d in sec['details']:
+                records.append((
+                    sec['id'],
+                    sec['title'],
+                    d['Service Team'],
+                    d['Y'],
+                    d['N'],
+                    quarter,
+                    year
+                ))
+        
+        cursor.executemany(insert_query, records)
+        cnx.commit()
+        print(f"Success: {len(records)} records synced to MySQL database.")
+        
+        cursor.close()
+        cnx.close()
+    except mysql.connector.Error as err:
+        print(f"MySQL Error: {err}")
+
 def update_html(data):
     if not os.path.exists(OUTPUT_HTML):
         print(f"Error: {OUTPUT_HTML} template not found.")
@@ -119,7 +201,6 @@ def update_html(data):
         content = f.read()
 
     json_data = json.dumps(data, ensure_ascii=False, indent=4)
-    # Inject data into index.html
     updated_content = re.sub(r'const rawData = \{.*?\};', f'const rawData = {json_data};', content, flags=re.DOTALL)
 
     with open(OUTPUT_HTML, 'w', encoding='utf-8') as f:
@@ -130,7 +211,7 @@ def sync_to_github():
     print("\n--- Syncing to GitHub ---")
     try:
         subprocess.run(["git", "add", "index.html"], check=True)
-        commit_msg = f"Auto-update Dashboard (Correct Logic): {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        commit_msg = f"Auto-update Dashboard (Advanced DB Sync): {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
         subprocess.run(["git", "commit", "-m", commit_msg], check=True)
         subprocess.run(["git", "push", "origin", "main"], check=True)
         print("Success: Dashboard is now LIVE on GitHub Pages!")
@@ -138,7 +219,29 @@ def sync_to_github():
         print(f"Git Sync Failed: {e}")
 
 if __name__ == "__main__":
+    # 1. Backup Excel
     backup_files()
+    
+    # 2. Process Data from Excel
     data = process_data()
+    
+    # 3. Update Local HTML (for immediate preview)
     update_html(data)
-    sync_to_github()
+    
+    # 4. Ask for Quarter/Year for MySQL Storage
+    print("\n" + "="*30)
+    print(" DATABASE SYNC CONFIGURATION")
+    print("="*30)
+    q_input = input("Enter Quarter (e.g., Q1, Q2, Q3, Q4) [Default: Q1]: ").strip().upper() or "Q1"
+    y_input = input("Enter Year (e.g., 2026) [Default: 2026]: ").strip() or "2026"
+    
+    # 5. Sync to MySQL
+    sync_to_mysql(data, q_input, int(y_input))
+    
+    # 6. Final Sync to GitHub (Ask user confirmation first - manually)
+    print("\n" + "="*30)
+    confirm = input("Push updates to GitHub now? (y/n): ").lower()
+    if confirm == 'y':
+        sync_to_github()
+    else:
+        print("Git Push cancelled by user.")
