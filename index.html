@@ -199,12 +199,35 @@
         }
         .glow-blob { position: absolute; width: 400px; height: 400px; border-radius: 50%; filter: blur(80px); z-index: 0; }
 
-        @keyframes pulse-green {
+        /* Dynamic System Health Pulse Animations */
+        @keyframes pulse-emerald {
             0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
             70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
-        .pulse-circle { animation: pulse-green 2s infinite; }
+        @keyframes pulse-blue {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        @keyframes pulse-amber {
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+        @keyframes pulse-rose {
+            0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(225, 29, 72, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+        }
+        
+        /* Pulse Class Definitions */
+        .pulse-emerald { animation: pulse-emerald 2s infinite; }
+        .pulse-blue { animation: pulse-blue 2s infinite; }
+        .pulse-amber { animation: pulse-amber 2s infinite; }
+        .pulse-rose { animation: pulse-rose 2s infinite; }
+        
+        .health-pulse { transition: all 0.5s ease; }
         
         @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         .animate-pulse-soft { animation: pulse-soft 2s infinite; }
@@ -281,6 +304,10 @@
                     <a href="#detailed-roadmap" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 px-10 rounded-full transition-all shadow-lg shadow-emerald-900/40 uppercase tracking-widest text-xs">Analyze Full Roadmap ↓</a>
                     <button onclick="exportSummary()" class="bg-white hover:bg-blue-50 text-blue-900 font-black py-4 px-10 rounded-full transition-all shadow-lg shadow-blue-900/20 uppercase tracking-widest text-xs flex items-center space-x-2"><span>Export CSV Summary</span></button>
                     <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 px-10 rounded-full transition-all shadow-lg shadow-emerald-900/40 uppercase tracking-widest text-xs flex items-center space-x-2"><span>Export PDF Report</span></button>
+                    <a href="https://centralgroup.sharepoint.com/:x:/r/sites/RISEndpointsupport/Shared%20Documents/EIA%20Process/2026/Q1/EIA%20Document.xlsx?d=wf4be3d6ad66648a595a805571bf072e3&csf=1&web=1&e=kcNSCL" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-black py-4 px-10 rounded-full transition-all shadow-lg shadow-blue-900/20 uppercase tracking-widest text-xs flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span>Open EIA SharePoint Document</span>
+                    </a>
                 </div>
             </div>
         </header>
@@ -304,12 +331,23 @@
             <div class="reveal grid grid-cols-1 lg:grid-cols-4 gap-8 mb-16 items-stretch">
                 <div class="lg:col-span-2 bg-gradient-to-br from-slate-900 to-blue-900 text-white p-8 rounded-[2rem] shadow-xl flex flex-col md:flex-row items-center justify-around border border-blue-800">
                     <div class="text-center mb-6 md:mb-0">
-                        <div class="w-32 h-32 rounded-full bg-emerald-500/20 flex items-center justify-center pulse-circle mb-4 mx-auto"><div class="w-24 h-24 rounded-full bg-emerald-500 flex flex-col items-center justify-center shadow-lg shadow-emerald-500/50"><svg class="w-8 h-8 text-white mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span class="text-[8px] font-black uppercase tracking-widest">Operational</span></div></div>
+                        <div id="health-outer-ring" class="w-32 h-32 rounded-full flex items-center justify-center health-pulse mb-4 mx-auto">
+                            <div id="health-inner-circle" class="w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-700">
+                                <svg id="health-icon" class="w-8 h-8 text-white mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span id="health-status-text" class="text-[8px] font-black uppercase tracking-widest">Operational</span>
+                            </div>
+                        </div>
                         <h3 class="text-xl font-black italic tracking-tighter">System Health</h3>
                     </div>
-                    <div class="grid grid-cols-2 gap-3 w-full md:w-auto">
-                        <div class="glass p-4 rounded-2xl text-center"><p class="text-[8px] font-black text-blue-300 uppercase mb-1">Issue Resolved</p><p class="text-2xl font-black" id="health-resolved">0</p></div>
-                        <div class="glass p-4 rounded-2xl text-center"><p class="text-[8px] font-black text-blue-300 uppercase mb-1">Pending Tasks</p><p class="text-2xl font-black text-rose-400" id="health-pending">0</p></div>
+                    <div class="grid grid-cols-2 gap-4 w-full md:w-auto">
+                        <div class="glass p-6 rounded-3xl text-center min-w-[140px]">
+                            <p class="text-[10px] md:text-xs font-black text-blue-300 uppercase mb-2 tracking-widest">Issue Resolved</p>
+                            <p class="text-3xl md:text-4xl font-black text-white" id="health-resolved">0</p>
+                        </div>
+                        <div class="glass p-6 rounded-3xl text-center min-w-[140px]">
+                            <p class="text-[10px] md:text-xs font-black text-blue-300 uppercase mb-2 tracking-widest">Pending Tasks</p>
+                            <p class="text-3xl md:text-4xl font-black text-rose-400" id="health-pending">0</p>
+                        </div>
                     </div>
                 </div>
                 <div class="bg-gradient-to-br from-indigo-50 to-blue-100 p-8 rounded-[2rem] shadow-lg border border-indigo-100">
@@ -389,6 +427,39 @@
             return 'text-rose-600 bg-rose-50';
         }
 
+        function updateSystemHealthUI(pct) {
+            const ring = document.getElementById('health-outer-ring');
+            const circle = document.getElementById('health-inner-circle');
+            const text = document.getElementById('health-status-text');
+            const icon = document.getElementById('health-icon');
+
+            // Clean previous classes
+            ring.className = "w-32 h-32 rounded-full flex items-center justify-center health-pulse mb-4 mx-auto";
+            circle.className = "w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-700";
+
+            if (pct >= 90) {
+                ring.classList.add('bg-emerald-500/20', 'pulse-emerald');
+                circle.classList.add('bg-emerald-500', 'shadow-emerald-500/50');
+                text.innerText = "Excellent";
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
+            } else if (pct >= 70) {
+                ring.classList.add('bg-blue-500/20', 'pulse-blue');
+                circle.classList.add('bg-blue-500', 'shadow-blue-500/50');
+                text.innerText = "Stable";
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>';
+            } else if (pct >= 50) {
+                ring.classList.add('bg-amber-500/20', 'pulse-amber');
+                circle.classList.add('bg-amber-500', 'shadow-amber-500/50');
+                text.innerText = "Warning";
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 15.652c-.77 1.333.192 3 1.732 3z"></path>';
+            } else {
+                ring.classList.add('bg-rose-500/20', 'pulse-rose');
+                circle.classList.add('bg-rose-500', 'shadow-rose-500/50');
+                text.innerText = "Critical";
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
+            }
+        }
+
         function renderDashboard() {
             const filter = document.getElementById('teamFilter').value;
             const grid = document.getElementById('summary-grid'); grid.innerHTML = '';
@@ -458,10 +529,12 @@
             const globalPct = globalTotal > 0 ? Math.round((globalY / globalTotal) * 100) : 0;
             targetCompliancePct = globalPct;
             document.getElementById('hero-total-units').innerText = globalTotal.toLocaleString();
-            document.getElementById('hero-last-update').innerText = rawData.timestamp;
             document.getElementById('health-resolved').innerText = globalY.toLocaleString();
             document.getElementById('health-pending').innerText = globalN.toLocaleString();
             document.getElementById('grand-total').innerText = `${globalPct}% Overall Compliance`;
+
+            // Update System Health Visuals
+            updateSystemHealthUI(globalPct);
 
             urgentItems.sort((a, b) => b.pending - a.pending).slice(0, 3).forEach(item => {
                 urgentContainer.innerHTML += `<div class="glass-card p-6 rounded-3xl flex flex-col justify-between border-rose-200/50" style="background: rgba(255, 241, 242, 0.4)">
@@ -501,7 +574,6 @@
             if (myPieChart) myPieChart.destroy();
             if (myTeamChart) myTeamChart.destroy();
 
-            // Dynamic Hover Border Colors (Darker shades of the base color)
             const hoverBorderColors = p.map(v => v >= 80 ? '#064e3b' : v >= 50 ? '#78350f' : '#7f1d1d');
 
             myBarChart = new Chart(document.getElementById('barChart'), {
