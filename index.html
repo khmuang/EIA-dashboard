@@ -433,7 +433,6 @@
             const text = document.getElementById('health-status-text');
             const icon = document.getElementById('health-icon');
 
-            // Clean previous classes
             ring.className = "w-32 h-32 rounded-full flex items-center justify-center health-pulse mb-4 mx-auto";
             circle.className = "w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-700";
 
@@ -529,11 +528,11 @@
             const globalPct = globalTotal > 0 ? Math.round((globalY / globalTotal) * 100) : 0;
             targetCompliancePct = globalPct;
             document.getElementById('hero-total-units').innerText = globalTotal.toLocaleString();
+            document.getElementById('hero-last-update').innerText = rawData.timestamp;
             document.getElementById('health-resolved').innerText = globalY.toLocaleString();
             document.getElementById('health-pending').innerText = globalN.toLocaleString();
             document.getElementById('grand-total').innerText = `${globalPct}% Overall Compliance`;
 
-            // Update System Health Visuals
             updateSystemHealthUI(globalPct);
 
             urgentItems.sort((a, b) => b.pending - a.pending).slice(0, 3).forEach(item => {
