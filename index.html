@@ -221,6 +221,7 @@
             100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
         }
         
+        /* Pulse Class Definitions */
         .pulse-emerald { animation: pulse-emerald 2s infinite; }
         .pulse-blue { animation: pulse-blue 2s infinite; }
         .pulse-amber { animation: pulse-amber 2s infinite; }
@@ -404,178 +405,18 @@
 
     <script id="dashboard-logic">
         const rawData = {
-    "timestamp": "09/03/2569 09:58:17",
-    "sections": [
-        {
-            "id": 1,
-            "title": "IT Asset incomplete information",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 245,
-                    "N": 0
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 52,
-                    "N": 0
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 38,
-                    "N": 0
-                }
+            "timestamp": "06/03/2569 10:16:42",
+            "sections": [
+                { id: 1, title: "1- IT Asset Incomplete Information", details: [{ "Service Team": "Branch", "Y": 189, "N": 56 }, { "Service Team": "DC", "Y": 33, "N": 5 }, { "Service Team": "HO", "Y": 52, "N": 0 }] },
+                { id: 2, title: "2.1 - Update OS - Replace", details: [{ "Service Team": "Branch", "Y": 0, "N": 7565 }, { "Service Team": "DC", "Y": 3, "N": 860 }, { "Service Team": "HO", "Y": 2691, "N": 0 }] },
+                { id: 3, title: "2.2 - OS Require Restart", details: [{ "Service Team": "Branch", "Y": 719, "N": 69 }, { "Service Team": "DC", "Y": 193, "N": 36 }, { "Service Team": "HO", "Y": 1124, "N": 243 }] },
+                { id: 4, title: "3- Antivirus Installation", details: [{ "Service Team": "Branch", "Y": 23, "N": 306 }, { "Service Team": "DC", "Y": 14, "N": 20 }, { "Service Team": "HO", "Y": 236, "N": 32 }] },
+                { id: 5, title: "4- Built-in Firewall Enable", details: [{ "Service Team": "Branch", "Y": 3003, "N": 1592 }, { "Service Team": "DC", "Y": 804, "N": 115 }, { "Service Team": "HO", "Y": 1204, "N": 242 }, { "Service Team": "Unknown", "Y": 6, "N": 7 }] },
+                { id: 6, title: "5- Client Joined Domain", details: [{ "Service Team": "Branch", "Y": 28, "N": 116 }, { "Service Team": "DC", "Y": 11, "N": 7 }, { "Service Team": "HO", "Y": 269, "N": 105 }] },
+                { id: 7, title: "6- Privileged User management", details: [{ "Service Team": "Branch", "Y": 96, "N": 1731 }, { "Service Team": "DC", "Y": 4, "N": 359 }, { "Service Team": "HO", "Y": 163, "N": 820 }] },
+                { id: 8, title: "7- Document Request Evidence", details: [{ "Service Team": "Branch", "Y": 0, "N": 3 }, { "Service Team": "DC", "Y": 0, "N": 3 }, { "Service Team": "HO", "Y": 2, "N": 1 }] }
             ]
-        },
-        {
-            "id": 2,
-            "title": "Update OS - Replace",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 7565,
-                    "N": 0
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 2691,
-                    "N": 0
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 863,
-                    "N": 0
-                }
-            ]
-        },
-        {
-            "id": 3,
-            "title": "Require Restart",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 788,
-                    "N": 0
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 1367,
-                    "N": 0
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 229,
-                    "N": 0
-                }
-            ]
-        },
-        {
-            "id": 4,
-            "title": "Antivirus not Install",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 329,
-                    "N": 0
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 268,
-                    "N": 0
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 34,
-                    "N": 0
-                }
-            ]
-        },
-        {
-            "id": 5,
-            "title": "Built-in Firewall are not enable",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 4595,
-                    "N": 0
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 1446,
-                    "N": 0
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 919,
-                    "N": 0
-                }
-            ]
-        },
-        {
-            "id": 6,
-            "title": "Client devices are not joined to the domain",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 144,
-                    "N": 0
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 374,
-                    "N": 0
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 18,
-                    "N": 0
-                }
-            ]
-        },
-        {
-            "id": 7,
-            "title": "Privileged User management",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 1827,
-                    "N": 0
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 983,
-                    "N": 0
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 363,
-                    "N": 0
-                }
-            ]
-        },
-        {
-            "id": 8,
-            "title": "Document request privileged user",
-            "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 3,
-                    "N": 0
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 3,
-                    "N": 0
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 3,
-                    "N": 0
-                }
-            ]
-        }
-    ]
-};
+        };
 
         let myBarChart, myPieChart, myTeamChart;
         let targetCompliancePct = 0;
