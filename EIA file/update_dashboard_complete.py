@@ -23,10 +23,9 @@ FILES = {
     8: "7- Document request privileged user.xlsx"
 }
 
-# FINAL VERIFIED POPULATION & TARGETS - Grand Total: 25,169
-# Adjusted Topic 1 targets to handle actual HO Success counts.
+# FINAL VERIFIED POPULATION & TARGETS - Grand Total: 25,169 Standard
 TOPIC_TOTALS = {
-    1: {"Branch": 242, "DC": 47, "HO": 55},      # Total 344
+    1: {"Branch": 246, "DC": 38, "HO": 60},      # Total 344
     2: {"Branch": 7565, "DC": 863, "HO": 2691},  # Total 11119
     3: {"Branch": 788, "DC": 229, "HO": 1367},   # Total 2384
     4: {"Branch": 329, "DC": 34, "HO": 268},     # Total 631
@@ -45,19 +44,19 @@ def backup_files():
             shutil.copy2(src, os.path.join(BACKUP_DIR, f"{timestamp}_{name}"))
 
 def process_data():
-    print(f"Applying Final Verified Logic V13 (Balance Correction)...")
+    print(f"Applying Final Verified Logic V22 (Standard Release)...")
     sections = []
     
-    # FINAL VERIFIED SUCCESS (Y) MAPPING - Balanced
+    # FINAL VERIFIED SUCCESS (Y) MAPPING - V22 Latest Verified
     VERIFIED_Y = {
-        1: {"Branch": 193, "DC": 33, "HO": 55},      # (242-193)+(47-33)+(55-55) = 49+14+0 = 63 Pending
-        2: {"Branch": 20, "DC": 63, "HO": 55},       # Total Y 138
-        3: {"Branch": 721, "DC": 197, "HO": 1124},   # Total Y 2042
-        4: {"Branch": 23, "DC": 14, "HO": 236},      # Total Y 273
-        5: {"Branch": 3017, "DC": 816, "HO": 1210},  # Total Y 5043
-        6: {"Branch": 29, "DC": 13, "HO": 269},      # Total Y 311
-        7: {"Branch": 96, "DC": 74, "HO": 163},      # Results in 2840 Pending
-        8: {"Branch": 0, "DC": 0, "HO": 2}           # Total Y 2
+        1: {"Branch": 194, "DC": 33, "HO": 60},      # results in 57 Pending
+        2: {"Branch": 20, "DC": 64, "HO": 55},       # Total Y 139
+        3: {"Branch": 757, "DC": 216, "HO": 1232},   # Total Y 2205 (Latest V21)
+        4: {"Branch": 77, "DC": 16, "HO": 244},      # Total Y 337 (Latest V21)
+        5: {"Branch": 3036, "DC": 822, "HO": 1217},  # Total Y 5075
+        6: {"Branch": 47, "DC": 15, "HO": 276},      # Total Y 338
+        7: {"Branch": 135, "DC": 118, "HO": 169},    # Total Y 422 (Latest V21)
+        8: {"Branch": 0, "DC": 0, "HO": 3}           # Total Y 3
     }
     
     for fid, name in FILES.items():
@@ -65,9 +64,9 @@ def process_data():
         topic_y = VERIFIED_Y.get(fid, {"Branch": 0, "HO": 0, "DC": 0})
         
         for team in ['Branch', 'HO', 'DC']:
-            y = topic_y.get(team, 0)
-            total = TOPIC_TOTALS[fid].get(team, 0)
-            n = max(0, total - y)
+            y = int(topic_y.get(team, 0))
+            total = int(TOPIC_TOTALS[fid].get(team, 0))
+            n = int(max(0, total - y))
             details.append({"Service Team": team, "Y": y, "N": n})
             
         sections.append({"id": fid, "title": name.replace(".xlsx", "").split("- ", 1)[-1], "details": details})
@@ -84,7 +83,7 @@ def update_html(data):
     json_data = json.dumps(data, ensure_ascii=False, indent=4)
     updated = re.sub(r'const rawData = \{.*?\};', f'const rawData = {json_data};', content, flags=re.DOTALL)
     with open(OUTPUT_HTML, 'w', encoding='utf-8') as f: f.write(updated)
-    print(f"\nSUCCESS: Local index.html updated with Balanced Logic V13 (Topic 1 Pending = 63).")
+    print(f"\nSUCCESS: Local index.html updated with V22 Logic and Today's Timestamp.")
 
 def sync_to_github():
     print("\n" + "="*30)
@@ -92,8 +91,8 @@ def sync_to_github():
     print("="*30)
     if confirm == 'y':
         try:
-            subprocess.run(["git", "add", "index.html"], check=True)
-            commit_msg = f"Auto-update Dashboard (Logic V13 Balanced): {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            subprocess.run(["git", "add", "index.html" "EIA file/update_dashboard_complete.py"], check=True)
+            commit_msg = f"Dashboard Refresh: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}"
             subprocess.run(["git", "commit", "-m", commit_msg], check=True)
             subprocess.run(["git", "push", "origin", "main"], check=True)
             print("Success: Live on GitHub!")
@@ -109,4 +108,4 @@ if __name__ == "__main__":
         update_html(data)
         sync_to_github()
     else:
-        print(f"ERROR: Integrity Check Failed ({g_total} != 25169).")
+        print(f"ERROR: Integrity Check Failed ({g_total} != 25169). Aborting.")
