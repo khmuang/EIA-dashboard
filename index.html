@@ -405,174 +405,78 @@
 
     <script id="dashboard-logic">
         const rawData = {
-    "timestamp": "11/03/2569 17:13:17",
+    "timestamp": "11/03/2569 17:30:00",
     "sections": [
         {
             "id": 1,
             "title": "IT Asset incomplete information",
             "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 193,
-                    "N": 49
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 55,
-                    "N": 0
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 33,
-                    "N": 14
-                }
+                { "Service Team": "Branch", "Y": 194, "N": 52 },
+                { "Service Team": "HO", "Y": 60, "N": 0 },
+                { "Service Team": "DC", "Y": 33, "N": 5 }
             ]
         },
         {
             "id": 2,
             "title": "Update OS - Replace",
             "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 20,
-                    "N": 7545
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 55,
-                    "N": 2636
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 63,
-                    "N": 800
-                }
+                { "Service Team": "Branch", "Y": 20, "N": 7545 },
+                { "Service Team": "HO", "Y": 55, "N": 2636 },
+                { "Service Team": "DC", "Y": 66, "N": 797 }
             ]
         },
         {
             "id": 3,
             "title": "Require Restart",
             "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 721,
-                    "N": 67
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 1124,
-                    "N": 243
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 197,
-                    "N": 32
-                }
+                { "Service Team": "Branch", "Y": 757, "N": 31 },
+                { "Service Team": "HO", "Y": 1232, "N": 135 },
+                { "Service Team": "DC", "Y": 216, "N": 13 }
             ]
         },
         {
             "id": 4,
             "title": "Antivirus not Install",
             "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 23,
-                    "N": 306
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 236,
-                    "N": 32
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 14,
-                    "N": 20
-                }
+                { "Service Team": "Branch", "Y": 77, "N": 252 },
+                { "Service Team": "HO", "Y": 244, "N": 24 },
+                { "Service Team": "DC", "Y": 16, "N": 18 }
             ]
         },
         {
             "id": 5,
             "title": "Built-in Firewall are not enable",
             "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 3017,
-                    "N": 1582
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 1210,
-                    "N": 245
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 816,
-                    "N": 103
-                }
+                { "Service Team": "Branch", "Y": 3036, "N": 1563 },
+                { "Service Team": "HO", "Y": 1217, "N": 238 },
+                { "Service Team": "DC", "Y": 822, "N": 97 }
             ]
         },
         {
             "id": 6,
             "title": "Client devices are not joined to the domain",
             "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 29,
-                    "N": 115
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 269,
-                    "N": 105
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 13,
-                    "N": 5
-                }
+                { "Service Team": "Branch", "Y": 47, "N": 97 },
+                { "Service Team": "HO", "Y": 276, "N": 98 },
+                { "Service Team": "DC", "Y": 15, "N": 3 }
             ]
         },
         {
             "id": 7,
             "title": "Privileged User management",
             "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 96,
-                    "N": 1731
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 163,
-                    "N": 820
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 74,
-                    "N": 289
-                }
+                { "Service Team": "Branch", "Y": 135, "N": 1692 },
+                { "Service Team": "HO", "Y": 169, "N": 814 },
+                { "Service Team": "DC", "Y": 118, "N": 245 }
             ]
         },
         {
             "id": 8,
             "title": "Document request privileged user",
             "details": [
-                {
-                    "Service Team": "Branch",
-                    "Y": 0,
-                    "N": 3
-                },
-                {
-                    "Service Team": "HO",
-                    "Y": 3,
-                    "N": 0
-                },
-                {
-                    "Service Team": "DC",
-                    "Y": 0,
-                    "N": 3
-                }
+                { "Service Team": "Branch", "Y": 0, "N": 3 },
+                { "Service Team": "HO", "Y": 3, "N": 0 },
+                { "Service Team": "DC", "Y": 0, "N": 3 }
             ]
         }
     ]
@@ -631,7 +535,7 @@
                 { bg: 'rgba(251, 191, 36, 0.1)', border: 'rgba(251, 191, 36, 0.3)', text: 'text-amber-700', icon: 'bg-amber-500/20 text-amber-600', svg: '<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z\"></path></svg>' },
                 { bg: 'rgba(244, 63, 94, 0.1)', border: 'rgba(244, 63, 94, 0.3)', text: 'text-rose-700', icon: 'bg-rose-500/20 text-rose-600', svg: '<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4\"></path></svg>' },
                 { bg: 'rgba(79, 70, 229, 0.1)', border: 'rgba(79, 70, 229, 0.3)', text: 'text-indigo-700', icon: 'bg-indigo-500/20 text-indigo-600', svg: '<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15\"></path></svg>' },
-                { bg: 'rgba(16, 185, 129, 0.1)', border: 'rgba(16, 185, 129, 0.3)', text: 'text-teal-700', icon: 'bg-teal-500/20 text-teal-600', svg: '<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\"></path></svg>' },
+                { bg: 'rgba(16, 185, 129, 0.1)', border: 'rgba(16, 185, 129, 0.3)', text: 'text-teal-700', icon: 'bg-teal-500/20 text-teal-600', svg: '<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z\"></path></svg>' },
                 { bg: 'rgba(249, 115, 22, 0.1)', border: 'rgba(249, 115, 22, 0.3)', text: 'text-orange-700', icon: 'bg-orange-500/20 text-orange-600', svg: '<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 11H5m14 0a2 2 0 012v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10\"></path></svg>' },
                 { bg: 'rgba(6, 182, 212, 0.1)', border: 'rgba(6, 182, 212, 0.3)', text: 'text-sky-700', icon: 'bg-sky-500/20 text-sky-600', svg: '<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9\"></path></svg>' },
                 { bg: 'rgba(217, 70, 239, 0.1)', border: 'rgba(217, 70, 239, 0.3)', text: 'text-fuchsia-700', icon: 'bg-fuchsia-500/20 text-fuchsia-600', svg: '<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z\"></path></svg>' },
