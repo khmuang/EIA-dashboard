@@ -10,7 +10,6 @@ import re
 EXCEL_DIR = "EIA file"
 BACKUP_DIR = os.path.join(EXCEL_DIR, "backup file")
 OUTPUT_HTML = "index.html"
-GITHUB_REPO_URL = "https://github.com/khmuang/EIA-dashboard.git"
 
 FILES = {
     1: "1- IT Asset incomplete information.xlsx",
@@ -23,7 +22,7 @@ FILES = {
     8: "7- Document request privileged user.xlsx"
 }
 
-# FINAL VERIFIED POPULATION & TARGETS - Grand Total: 25,169 Standard
+# STANDARD POPULATION TARGETS - Grand Total: 25,169
 TOPIC_TOTALS = {
     1: {"Branch": 246, "DC": 38, "HO": 60},      # Total 344
     2: {"Branch": 7565, "DC": 863, "HO": 2691},  # Total 11119
@@ -31,40 +30,87 @@ TOPIC_TOTALS = {
     4: {"Branch": 329, "DC": 34, "HO": 268},     # Total 631
     5: {"Branch": 4599, "DC": 919, "HO": 1455},  # Total 6973
     6: {"Branch": 144, "DC": 18, "HO": 374},     # Total 536
-    7: {"Branch": 1827, "DC": 363, "HO": 983},   # Total 3173
+    7: {"Branch": 1859, "DC": 365, "HO": 949},   # Total 3173
     8: {"Branch": 3, "DC": 3, "HO": 3}           # Total 9
 }
 
-def backup_files():
-    if not os.path.exists(BACKUP_DIR): os.makedirs(BACKUP_DIR)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    for name in FILES.values():
-        src = os.path.join(EXCEL_DIR, name)
-        if os.path.exists(src):
-            shutil.copy2(src, os.path.join(BACKUP_DIR, f"{timestamp}_{name}"))
+def get_correct_df(file_path, sheet_name=0):
+    """Finds the header row dynamically and returns the DataFrame."""
+    potential_keys = ['Name', 'BU', 'Service Team', 'Computer Name', 'Bu']
+    for h in [2, 3, 1, 0, 4]:
+        try:
+            df = pd.read_excel(file_path, sheet_name=sheet_name, header=h)
+            if any(k in df.columns for k in potential_keys):
+                return df
+        except: continue
+    return pd.read_excel(file_path, sheet_name=sheet_name, header=0) # Fallback
+
+def calculate_topic_stats(fid, file_path):
+    """Calculates Y/N stats for a topic from its Excel file."""
+    stats = {"Branch": 0, "DC": 0, "HO": 0}
+    
+    try:
+        if fid == 1:
+            xl = pd.ExcelFile(file_path)
+            for sheet in xl.sheet_names:
+                df = get_correct_df(file_path, sheet_name=sheet)
+                status_col = next((c for c in df.columns if "Update Status Y/N" in str(c)), None)
+                group_col = next((c for c in df.columns if "Groups" in str(c)), None)
+                if status_col and group_col:
+                    df['Team'] = df[group_col].astype(str).str.upper().apply(lambda x: 'HO' if 'HO' in x else ('DC' if 'DC' in x else 'Branch'))
+                    y_counts = df[df[status_col].astype(str).str.strip().str.upper() == 'Y']['Team'].value_counts()
+                    for team, count in y_counts.items(): stats[team] += int(count)
+        elif fid == 3:
+            df = pd.read_excel(file_path, sheet_name='Restart', header=2)
+            team_col = 'Service Team'
+            status_col = 'Restart Action  Y/N'
+            if status_col in df.columns:
+                mask_y = df[status_col].astype(str).str.strip().str.upper() == 'Y'
+                y_counts = df[mask_y][team_col].value_counts()
+                for team, count in y_counts.items():
+                    t_name = str(team).strip()
+                    if t_name in stats: stats[t_name] += int(count)
+        else:
+            df = get_correct_df(file_path)
+            # Identify columns
+            team_col = next((c for c in df.columns if "Service Team" in str(c)), None)
+            status_keys = ["Update Status Y/N", "Updated or Replaced Y/N", "Install Status Y/N", "Firewall enable Y/N", 
+                           "Join status Y/N", "Remove accounts", "evidence", "Y/N", "Restart Action", "Status"]
+            status_col = None
+            for key in status_keys:
+                status_col = next((c for c in df.columns if key.lower() in str(c).lower()), None)
+                if status_col: break
+            
+            if not team_col: # Fallback if no service team column (Topic 1 already handled)
+                team_col = 'Service Team' if 'Service Team' in df.columns else None
+
+            if status_col:
+                mask_y = df[status_col].astype(str).str.strip().str.upper() == 'Y'
+                if team_col:
+                    y_counts = df[mask_y][team_col].value_counts()
+                    for team, count in y_counts.items():
+                        t_name = str(team).strip()
+                        if t_name in stats: stats[t_name] += int(count)
+                else:
+                    # If no team col, distribute to all (rare)
+                    stats["HO"] = int(mask_y.sum())
+        
+        return stats
+    except Exception as e:
+        print(f"Error reading Topic {fid}: {e}")
+        return stats
 
 def process_data():
-    print(f"Applying Final Verified Logic V23 (Standard Release)...")
+    print(f"Reading Excel files and preparing V23 update...")
     sections = []
     
-    # FINAL VERIFIED SUCCESS (Y) MAPPING - V23 Latest Verified (Mar 16, 2026)
-    VERIFIED_Y = {
-        1: {"Branch": 194, "DC": 33, "HO": 60},      # Total Y 287
-        2: {"Branch": 20, "DC": 69, "HO": 55},       # Total Y 144
-        3: {"Branch": 757, "DC": 217, "HO": 1239},   # Total Y 2213
-        4: {"Branch": 78, "DC": 16, "HO": 265},      # Total Y 359
-        5: {"Branch": 3030, "DC": 822, "HO": 1217},  # Total Y 5069
-        6: {"Branch": 61, "DC": 16, "HO": 278},      # Total Y 355
-        7: {"Branch": 137, "DC": 118, "HO": 181},    # Total Y 436
-        8: {"Branch": 0, "DC": 0, "HO": 3}           # Total Y 3
-    }
-    
     for fid, name in FILES.items():
-        details = []
-        topic_y = VERIFIED_Y.get(fid, {"Branch": 0, "HO": 0, "DC": 0})
+        file_path = os.path.join(EXCEL_DIR, name)
+        y_stats = calculate_topic_stats(fid, file_path) if os.path.exists(file_path) else {"Branch": 0, "DC": 0, "HO": 0}
         
+        details = []
         for team in ['Branch', 'HO', 'DC']:
-            y = int(topic_y.get(team, 0))
+            y = int(y_stats.get(team, 0))
             total = int(TOPIC_TOTALS[fid].get(team, 0))
             n = int(max(0, total - y))
             details.append({"Service Team": team, "Y": y, "N": n})
@@ -83,29 +129,13 @@ def update_html(data):
     json_data = json.dumps(data, ensure_ascii=False, indent=4)
     updated = re.sub(r'const rawData = \{.*?\};', f'const rawData = {json_data};', content, flags=re.DOTALL)
     with open(OUTPUT_HTML, 'w', encoding='utf-8') as f: f.write(updated)
-    print(f"\nSUCCESS: Local index.html updated with V23 Logic and Today's Timestamp.")
-
-def sync_to_github():
-    print("\n" + "="*30)
-    confirm = input("Push updates to GitHub now? (y/n): ").lower()
-    print("="*30)
-    if confirm == 'y':
-        try:
-            subprocess.run(["git", "add", "index.html", "EIA file/update_dashboard_complete.py"], check=True)
-            commit_msg = f"Dashboard Refresh: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}"
-            subprocess.run(["git", "commit", "-m", commit_msg], check=True)
-            subprocess.run(["git", "push", "origin", "main"], check=True)
-            print("Success: Live on GitHub!")
-        except Exception as e: print(f"Git Failed: {e}")
-    else: print("Push skipped by user choice.")
+    print(f"\nSUCCESS: Local index.html updated with LIVE Excel data.")
 
 if __name__ == "__main__":
-    backup_files()
     data = process_data()
     g_total = sum(sum(d['Y']+d['N'] for d in s['details']) for s in data['sections'])
     print(f"\n>>> FINAL SYSTEM CHECK: GRAND TOTAL = {g_total} (Target: 25169) <<<")
     if g_total == 25169:
         update_html(data)
-        sync_to_github()
     else:
         print(f"ERROR: Integrity Check Failed ({g_total} != 25169). Aborting.")
