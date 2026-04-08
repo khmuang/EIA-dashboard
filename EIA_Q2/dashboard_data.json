@@ -1,0 +1,223 @@
+{
+  "last_refresh": "08 Apr 2026 20:51",
+  "deadline": "20 May 2026",
+  "overall_score": 0.0,
+  "total_units": 11821,
+  "topics": [
+    {
+      "id": "1.1",
+      "name": "IT Asset Management",
+      "total": 201,
+      "success": 0,
+      "compliance": 0.0
+    },
+    {
+      "id": "1.2",
+      "name": "Install GLPI agent",
+      "total": 49,
+      "success": 0,
+      "compliance": 0.0
+    },
+    {
+      "id": "2",
+      "name": "Update OS",
+      "total": 5705,
+      "success": 0,
+      "compliance": 0.0
+    },
+    {
+      "id": "3",
+      "name": "Require Restart",
+      "total": 323,
+      "success": 0,
+      "compliance": 0.0
+    },
+    {
+      "id": "4",
+      "name": "Antivirus Installation",
+      "total": 289,
+      "success": 0,
+      "compliance": 0.0
+    },
+    {
+      "id": "5",
+      "name": "Built-in Firewall Enablement",
+      "total": 3363,
+      "success": 0,
+      "compliance": 0.0
+    },
+    {
+      "id": "6",
+      "name": "Client join domain",
+      "total": 200,
+      "success": 0,
+      "compliance": 0.0
+    },
+    {
+      "id": "7",
+      "name": "Privileged User management",
+      "total": 1682,
+      "success": 0,
+      "compliance": 0.0
+    },
+    {
+      "id": "8",
+      "name": "Document Request",
+      "total": 9,
+      "success": 0,
+      "compliance": 0.0
+    }
+  ],
+  "teams": {
+    "Branch": {
+      "topics": {
+        "1.1": {
+          "total": 155,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "1.2": {
+          "total": 30,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "2": {
+          "total": 3638,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "3": {
+          "total": 90,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "4": {
+          "total": 188,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "5": {
+          "total": 3242,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "6": {
+          "total": 166,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "7": {
+          "total": 862,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "8": {
+          "total": 3,
+          "success": 0,
+          "compliance": 0.0
+        }
+      },
+      "overall": 0.0
+    },
+    "DC": {
+      "topics": {
+        "1.1": {
+          "total": 31,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "1.2": {
+          "total": 5,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "2": {
+          "total": 599,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "3": {
+          "total": 36,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "4": {
+          "total": 33,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "5": {
+          "total": 43,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "6": {
+          "total": 3,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "7": {
+          "total": 233,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "8": {
+          "total": 3,
+          "success": 0,
+          "compliance": 0.0
+        }
+      },
+      "overall": 0.0
+    },
+    "HO": {
+      "topics": {
+        "1.1": {
+          "total": 15,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "1.2": {
+          "total": 14,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "2": {
+          "total": 1468,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "3": {
+          "total": 197,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "4": {
+          "total": 68,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "5": {
+          "total": 78,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "6": {
+          "total": 31,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "7": {
+          "total": 587,
+          "success": 0,
+          "compliance": 0.0
+        },
+        "8": {
+          "total": 3,
+          "success": 0,
+          "compliance": 0.0
+        }
+      },
+      "overall": 0.0
+    }
+  }
+}
